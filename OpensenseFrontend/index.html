@@ -11,14 +11,8 @@
     <div class="main-container">
         <!-- Top half container -->
         <div class="data-container">
-            <!-- list -->
             <div class="data-list" id="data-container"> 
                 <!-- Data will be injected here -->
-                <p>random</p>
-                <p>random</p>
-                <p>random</p>
-                <p>random</p>
-                <p>random</p>
             </div>
 
             <div class="data-graph">
@@ -29,9 +23,9 @@
         <!-- Bottom half container -->
         <div class="button-container">
             <div class="sensor-buttons">
-                <button class="sensor-button" onclick="injectData('Data 1')">Sensor 1</button>
-                <button class="sensor-button" onclick="injectData('Data 2')">Sensor 2</button>
-                <button class="sensor-button" onclick="injectData('Data 3')">Sensor 3</button>
+                <button class="sensor-button" onclick="injectDataFromFile()">Sensor 1</button>
+                <button class="sensor-button" onclick="injectDataFromFile()">Sensor 2</button>
+                <button class="sensor-button" onclick="injectDataFromFile()">Sensor 3</button>
             </div>
             <div class="export-clear-buttons">
                 <button class="export-button">Export</button>
@@ -42,27 +36,53 @@
 
     <script>
         var intervalId;
-
-        function injectData(data) {
+        var dataArray = [];
+    
+        // fetching data file
+        function injectDataFromFile() {
             clearInterval(intervalId);
             var dataContainer = document.getElementById('data-container');
             dataContainer.innerHTML = '';
-            
+    
+            fetch('data.txt')
+            .then(response => response.text())
+            .then(data => {
+                dataArray = data.split('\n').reverse();
+                injectData();
+            })
+            .catch(error => console.error('Error fetching data:', error));
+        }
+    
+        function injectData() {
             intervalId = setInterval(function() {
                 var dataContainer = document.getElementById('data-container');
-                var newData = document.createElement('p');
-                newData.textContent = data;
-                dataContainer.insertBefore(newData, dataContainer.firstChild);
-                if (dataContainer.children.length > 8) {
-                    dataContainer.removeChild(dataContainer.lastChild);
+                if (dataArray.length > 0) {
+                    // insert backwards for top down insertion
+                    var line = dataArray.pop();
+                    var parts = line.split(', ');
+                    var newData = document.createElement('p');
+                    
+                    // take first part of file 
+                    newData.textContent = parts[0];
+                    dataContainer.insertBefore(newData, dataContainer.firstChild);
+                    
+                    // if too many on screen remove from bottom
+                    if (dataContainer.children.length > 8) {
+                        dataContainer.removeChild(dataContainer.lastChild);
+                    }
+                } 
+                // stop inject if no signal or new data
+                else {
+                    clearInterval(intervalId);
                 }
-            }, 3000);
+            }, 2000);
         }
-
+    
         function clearContent() {
             clearInterval(intervalId);
             var dataContainer = document.getElementById('data-container');
             dataContainer.innerHTML = '';
+            dataArray = [];
         }
     </script>
 </body>
