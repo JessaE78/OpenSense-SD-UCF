@@ -16,7 +16,7 @@
             </div>
 
             <div class="data-graph">
-
+                <!-- Graph will go here -->
             </div>
         </div>
 
@@ -67,15 +67,15 @@
                     dataContainer.insertBefore(newData, dataContainer.firstChild);
                     
                     // if too many on screen remove from bottom
-                    if (dataContainer.children.length > 8) {
-                        dataContainer.removeChild(dataContainer.lastChild);
-                    }
+                    // if (dataContainer.children.length > 8) {
+                    //     dataContainer.removeChild(dataContainer.lastChild);
+                    // }
                 } 
                 // stop inject if no signal or new data
                 else {
                     clearInterval(intervalId);
                 }
-            }, 2000);
+            }, 1000);
         }
     
         function clearContent() {
