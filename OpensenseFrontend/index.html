@@ -40,7 +40,7 @@
     
         // fetching data file
         function injectDataFromFile() {
-            clearInterval(intervalId);
+            //clearInterval(intervalId);
             var dataContainer = document.getElementById('data-container');
             dataContainer.innerHTML = '';
     
@@ -74,6 +74,7 @@
                 // stop inject if no signal or new data
                 else {
                     clearInterval(intervalId);
+                    dataArray = [];
                 }
             }, 1000);
         }
