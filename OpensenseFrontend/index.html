@@ -23,12 +23,12 @@
         <!-- Bottom half container -->
         <div class="button-container">
             <div class="sensor-buttons">
-                <button class="sensor-button" onclick="injectDataFromFile()">Sensor 1</button>
-                <button class="sensor-button" onclick="injectDataFromFile()">Sensor 2</button>
-                <button class="sensor-button" onclick="injectDataFromFile()">Sensor 3</button>
+                <button class="sensor-button" id="sensor1" onclick="injectDataFromFile('sensor1')">Temperature</button>
+                <button class="sensor-button" id="sensor2" onclick="injectDataFromFile('sensor2')">Humidity</button>
+                <button class="sensor-button" id="sensor3" onclick="injectDataFromFile('sensor3')">Lux</button>
             </div>
             <div class="export-clear-buttons">
-                <button class="export-button">Export</button>
+                <button class="export-button">Graph</button>
                 <button class="clear-button" onclick="clearContent()">Clear</button>
             </div>
         </div>
@@ -39,40 +39,47 @@
         var dataArray = [];
     
         // fetching data file
-        function injectDataFromFile() {
-            //clearInterval(intervalId);
+        function injectDataFromFile(sensorId) {
+            clearInterval(intervalId);
+
             var dataContainer = document.getElementById('data-container');
             dataContainer.innerHTML = '';
-    
+
             fetch('data.txt')
-            .then(response => response.text())
-            .then(data => {
-                dataArray = data.split('\n').reverse();
-                injectData();
-            })
-            .catch(error => console.error('Error fetching data:', error));
+                .then(response => response.text())
+                .then(data => {
+                    dataArray = data.split('\n').reverse();
+                    injectData(sensorId);
+                })
+                .catch(error => console.error('Error fetching data:', error));
         }
-    
-        function injectData() {
+
+        function injectData(sensorId) {
             intervalId = setInterval(function() {
                 var dataContainer = document.getElementById('data-container');
+
                 if (dataArray.length > 0) {
                     // insert backwards for top down insertion
                     var line = dataArray.pop();
                     var parts = line.split(', ');
                     var newData = document.createElement('p');
-                    
-                    // take first part of file 
-                    newData.textContent = parts[0];
+
+                    switch(sensorId) {
+                        case 'sensor1':
+                            newData.textContent = "Temperature: " + parts[1];
+                            break;
+                        case 'sensor2':
+                            newData.textContent = "Humidity: " + parts[2];
+                            break;
+                        case 'sensor3':
+                            newData.textContent = "Lux: " + parts[3];
+                            break;
+                        default:
+                            newData.textContent = "Unknown sensor";
+                    }
+
                     dataContainer.insertBefore(newData, dataContainer.firstChild);
-                    
-                    // if too many on screen remove from bottom
-                    // if (dataContainer.children.length > 8) {
-                    //     dataContainer.removeChild(dataContainer.lastChild);
-                    // }
-                } 
-                // stop inject if no signal or new data
-                else {
+                } else {
                     clearInterval(intervalId);
                     dataArray = [];
                 }
