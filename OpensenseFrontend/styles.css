@@ -24,11 +24,14 @@ body {
     margin: auto;
     border: 2px solid #000000;
     background: linear-gradient(#000, #000) no-repeat center/1.5px 100%;
-    overflow-y: auto; /* Add this line to make the div scrollable */
+    
 }
 
 .data-list {
     padding-left: 15px;
+    width: 350px;
+    height: 300px;
+    overflow-y: auto; /* Add this line to make the div scrollable */
 }
 
 .button-container {
@@ -91,4 +94,17 @@ body {
 
 .clear-button {
     background-color: #f44336;
+}
+
+.data-spacing {
+    padding-right: 80px; 
+}
+
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+.header h1 {
+    margin: 0;
 }
