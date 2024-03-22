@@ -45,7 +45,7 @@
             var dataContainer = document.getElementById('data-container');
             dataContainer.innerHTML = '';
 
-            fetch('data.txt')
+            fetch('DATA.TXT')
                 .then(response => response.text())
                 .then(data => {
                     dataArray = data.split('\n').reverse();
