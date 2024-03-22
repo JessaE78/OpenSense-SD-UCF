@@ -9,15 +9,24 @@
 </head>
 <body>
     <div class="main-container">
+        <div class="header">
+            <h1>Open Sense Sensor Platform</h1>
+        </div>
+        
         <!-- Top half container -->
         <div class="data-container">
-            <div class="data-list" id="data-container"> 
+            <div class="data-list" id="data-list"> 
                 <!-- Data will be injected here -->
             </div>
 
-            <div class="data-graph">
+            <div class="data-graph" id="graph-container">
                 <!-- Graph will go here -->
             </div>
+        </div>
+
+        <div class="chart-info">
+            <span>Sensor data</span>
+            <span style="margin-left: 290px;">Graph</span>
         </div>
 
         <!-- Bottom half container -->
@@ -28,7 +37,7 @@
                 <button class="sensor-button" id="sensor3" onclick="injectDataFromFile('sensor3')">Lux</button>
             </div>
             <div class="export-clear-buttons">
-                <button class="export-button">Graph</button>
+                <button class="export-button" onclick="insertGraphImage()">Graph</button>
                 <button class="clear-button" onclick="clearContent()">Clear</button>
             </div>
         </div>
@@ -37,47 +46,54 @@
     <script>
         var intervalId;
         var dataArray = [];
+        var lastLine = '';
     
-        // fetching data file
+        // Method to fetch data from file and inject it into the container
         function injectDataFromFile(sensorId) {
             clearInterval(intervalId);
 
-            var dataContainer = document.getElementById('data-container');
+            var dataContainer = document.getElementById('data-list');
             dataContainer.innerHTML = '';
 
             fetch('DATA.TXT')
                 .then(response => response.text())
                 .then(data => {
-                    dataArray = data.split('\n').reverse();
-                    injectData(sensorId);
+                    const lines = data.split('\n');
+
+                    if (lines[lines.length - 1] !== lastLine) {
+                        dataArray = lines.reverse();
+                        lastLine = lines[lines.length - 1];
+                        injectData(sensorId);
+                    }
                 })
                 .catch(error => console.error('Error fetching data:', error));
         }
-
+            
+        // Method to inject data into the container
         function injectData(sensorId) {
             intervalId = setInterval(function() {
-                var dataContainer = document.getElementById('data-container');
-
+                var dataContainer = document.getElementById('data-list');
+    
                 if (dataArray.length > 0) {
                     // insert backwards for top down insertion
                     var line = dataArray.pop();
                     var parts = line.split(', ');
                     var newData = document.createElement('p');
-
+    
                     switch(sensorId) {
-                        case 'sensor1':
-                            newData.textContent = "Temperature: " + parts[1];
-                            break;
-                        case 'sensor2':
-                            newData.textContent = "Humidity: " + parts[2];
-                            break;
-                        case 'sensor3':
-                            newData.textContent = "Lux: " + parts[3];
-                            break;
-                        default:
-                            newData.textContent = "Unknown sensor";
+                    case 'sensor1':
+                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[1] + " °F";
+                        break;
+                    case 'sensor2':
+                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[2] + "%";
+                        break;
+                    case 'sensor3':
+                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[3] + " klux";
+                        break;
+                    default:
+                        newData.textContent = "error";
                     }
-
+    
                     dataContainer.insertBefore(newData, dataContainer.firstChild);
                 } else {
                     clearInterval(intervalId);
@@ -85,13 +101,22 @@
                 }
             }, 1000);
         }
+
+        function insertGraphImage() {
+            var graphContainer = document.getElementById('graph-container');
+            graphContainer.innerHTML = '<img src="graph.png">';
+        }
     
+        // Method to clear the content
         function clearContent() {
             clearInterval(intervalId);
-            var dataContainer = document.getElementById('data-container');
+            var dataContainer = document.getElementById('data-list');
+            var graphContainer = document.getElementById('graph-container');
             dataContainer.innerHTML = '';
+            graphContainer.innerHTML = '';
             dataArray = [];
+            lastLine = '';
         }
-    </script>
+    </script>    
 </body>
 </html>
