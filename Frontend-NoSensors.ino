@@ -33,11 +33,11 @@ void loop() {
         request += c;
         if (c == '\n' && request.endsWith("\r\n\r\n")) {
           // Match the request with the file names on the SD card
-          // Call the link what it get's referenced as and open the 
+// Call the link what it get's referenced as and open the 
           // file as it's dipslayed on the SD card
           if (request.indexOf("GET / ") != -1) {
             serveFile(client, "INDEX~1.HTM", "text/html");
-          } else if (request.indexOf("GET /styles.css ") != -1) { 
+          } else if (request.indexOf("GET /styles.css ") != -1) {
             serveFile(client, "STYLES.CSS", "text/css");
           } else if (request.indexOf("GET /DATA.TXT ") != -1) {
             serveFile(client, "DATA.TXT", "text/plain");
@@ -45,6 +45,8 @@ void loop() {
             // SD card file name
           } else if (request.indexOf("GET /BACKGR~1.PNG ") != -1) {
             serveFile(client, "BACKGR~1.PNG", "image/png");
+          } else if (request.indexOf("GET /GRAPH.PNG ") != -1) {
+            serveFile(client, "GRAPH.PNG", "image/png");
           } else {
             send404(client);
           }
@@ -82,7 +84,8 @@ void serveFile(EthernetClient &client, const char *filePath, const char *mimeTyp
 void send404(EthernetClient &client) {
   client.println(F("HTTP/1.1 404 Not Found"));
   client.println(F("Content-Type: text/html"));
-  client.println(F("Connection: close")); // Ensure the connection is closed after completion
+  // Ensure the connection is closed after completion
+  client.println(F("Connection: close")); 
   client.println();
   client.println(F("<!DOCTYPE html><html><body><h1>404 Not Found</h1><p>The requested URL was not found on this server.</p></body></html>"));
 }
