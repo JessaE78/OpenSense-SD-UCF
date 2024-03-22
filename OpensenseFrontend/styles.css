@@ -31,7 +31,20 @@ body {
     padding-left: 15px;
     width: 350px;
     height: 300px;
-    overflow-y: auto; /* Add this line to make the div scrollable */
+    overflow-y: auto;
+    float: left;
+}
+
+.data-graph {
+    width: 330px;
+    height: 300px;
+    margin-left: auto;
+}
+
+.data-graph img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
 }
 
 .button-container {
@@ -107,4 +120,9 @@ body {
 
 .header h1 {
     margin: 0;
+}
+
+.chart-info {
+    text-align: center;
+    padding-bottom: 10px;
 }
