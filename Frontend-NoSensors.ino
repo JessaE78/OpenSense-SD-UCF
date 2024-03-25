@@ -9,6 +9,7 @@ IPAddress ip(192, 168, 10, 11);
 EthernetServer server(80);
 
 void setup() {
+  Ethernet.init(10);  // Most Arduino shields
   Serial.begin(9600);
   Ethernet.begin(mac, ip);
   server.begin();
