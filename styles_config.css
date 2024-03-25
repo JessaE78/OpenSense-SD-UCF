@@ -1,0 +1,43 @@
+/* Add padding to the body */
+body {
+    padding-left: 20px;
+    padding-right: 20px;
+  }
+  
+  /* Style the title */
+  #title {
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 20px;
+  }
+  
+  /* Style the table */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+  }
+  
+  /* Style table cells */
+  th, td {
+    border: 1px solid black;
+    padding: 10px;
+    text-align: center;
+  }
+  
+  /* Style the colored square */
+  .color-square {
+    width: 30px;
+    height: 30px;
+    border: 1px solid black;
+  }
+  
+  /* Style the button */
+  #link-button {
+    display: block;
+    margin-top: 20px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+  
