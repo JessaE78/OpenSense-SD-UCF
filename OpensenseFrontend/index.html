@@ -33,7 +33,7 @@
         <div class="button-container">
             <div class="sensor-buttons">
                 <button class="sensor-button" id="sensor1" onclick="injectDataFromFile('sensor1')">Temperature</button>
-                <button class="sensor-button" id="sensor2" onclick="injectDataFromFile('sensor2')">Humidity</button>
+                <button class="sensor-button" id="sensor2" onclick="injectDataFromFile('sensor2')">Air Quality</button>
                 <button class="sensor-button" id="sensor3" onclick="injectDataFromFile('sensor3')">Lux</button>
             </div>
             <div class="export-clear-buttons">
@@ -82,10 +82,10 @@
     
                     switch(sensorId) {
                     case 'sensor1':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[1] + " °F";
+                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[1] + " °C";
                         break;
                     case 'sensor2':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[2] + "%";
+                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[2] + "PPB";
                         break;
                     case 'sensor3':
                         newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[3] + " lux";
