@@ -3,13 +3,25 @@
 #include <Ethernet.h>
 #include <SD.h>
 
-// Specific to my ETH SHLD 2
-byte mac[] = {0xA8, 0x61, 0x0A, 0xAF, 0x18, 0xDF};
+// Ethernet and SD configuration
+byte mac[] = {0xA8, 0x61, 0x0A, 0xAF, 0x18, 0xDF}; // Specific to my ETH SHLD 2
 IPAddress ip(192, 168, 10, 11);
 EthernetServer server(80);
 
+// File names and MIME types stored in PROGMEM
+const char indexFileName[] PROGMEM = "INDEX~1.HTM";
+const char stylesFileName[] PROGMEM = "STYLES.CSS";
+const char dataFileName[] PROGMEM = "DATA.TXT";
+const char bckgFileName[] PROGMEM = "BACKGR~1.PNG";
+const char graphFileName[] PROGMEM = "GRAPH.PNG";
+
+const char textHtmlMimeType[] PROGMEM = "text/html";
+const char textCssMimeType[] PROGMEM = "text/css";
+const char textPlainMimeType[] PROGMEM = "text/plain";
+const char imgMimeType[] PROGMEM = "image/png";
+
 void setup() {
-  Ethernet.init(10);  // Most Arduino shields
+  Ethernet.init(10); 
   Serial.begin(9600);
   Ethernet.begin(mac, ip);
   server.begin();
@@ -33,21 +45,22 @@ void loop() {
         char c = client.read();
         request += c;
         if (c == '\n' && request.endsWith("\r\n\r\n")) {
-          // Match the request with the file names on the SD card
-// Call the link what it get's referenced as and open the 
-          // file as it's dipslayed on the SD card
+          /* Serve files based on the request
+          * Match the request with the file names on the SD card
+          * Call the link what it get's referenced as and open the 
+          * file as it's dipslayed on the SD card */
           if (request.indexOf("GET / ") != -1) {
-            serveFile(client, "INDEX~1.HTM", "text/html");
+            serveFile(client, indexFileName, textHtmlMimeType);
           } else if (request.indexOf("GET /styles.css ") != -1) {
-            serveFile(client, "STYLES.CSS", "text/css");
+            serveFile(client, stylesFileName, textCssMimeType);
           } else if (request.indexOf("GET /DATA.TXT ") != -1) {
-            serveFile(client, "DATA.TXT", "text/plain");
+            serveFile(client, dataFileName, textPlainMimeType);
             // For some reason the reference had to be the same as the
             // SD card file name
-          } else if (request.indexOf("GET /BACKGR~1.PNG ") != -1) {
-            serveFile(client, "BACKGR~1.PNG", "image/png");
+          } else if (request.indexOf("GET /BACKGR~1.PNG") != -1) {
+            serveFile(client, bckgFileName, imgMimeType);
           } else if (request.indexOf("GET /GRAPH.PNG ") != -1) {
-            serveFile(client, "GRAPH.PNG", "image/png");
+            serveFile(client, graphFileName, imgMimeType);
           } else {
             send404(client);
           }
@@ -60,13 +73,18 @@ void loop() {
   }
 }
 
-// Servers the file to the HTTP GET Request
-void serveFile(EthernetClient &client, const char *filePath, const char *mimeType) {
-  Serial.print("Serving file: ");
+// Serves the file to the HTTP GET Request
+void serveFile(EthernetClient &client, const char *filePathProgmem, const char *mimeTypeProgmem) {
+  char filePath[30]; // Adjust size as needed
+  char mimeType[30]; // Adjust size as needed
+  strcpy_P(filePath, filePathProgmem); // Copy the file path from program memory to SRAM
+  strcpy_P(mimeType, mimeTypeProgmem); // Copy the MIME type from program memory to SRAM
+
+  Serial.print(F("Serving file: "));
   Serial.println(filePath);
   File file = SD.open(filePath);
   if (file) {
-    Serial.println("File opened successfully.");
+    Serial.println(F("File opened successfully."));
     client.println(F("HTTP/1.1 200 OK"));
     client.print(F("Content-Type: "));
     client.println(mimeType);
@@ -85,8 +103,7 @@ void serveFile(EthernetClient &client, const char *filePath, const char *mimeTyp
 void send404(EthernetClient &client) {
   client.println(F("HTTP/1.1 404 Not Found"));
   client.println(F("Content-Type: text/html"));
-  // Ensure the connection is closed after completion
-  client.println(F("Connection: close")); 
+  client.println(F("Connection: close"));
   client.println();
   client.println(F("<!DOCTYPE html><html><body><h1>404 Not Found</h1><p>The requested URL was not found on this server.</p></body></html>"));
 }
