@@ -9,11 +9,12 @@
 #include <Adafruit_MPL3115A2.h> // Temp Sensor - MPL3115A2
 #include "Adafruit_VEML7700.h"  // Lux  Sensor - VEML7700
 #include "Adafruit_seesaw.h"    // Soil Sensor - Stemma Seesaw
+#include "AGS02MA.h"
 
 // For AGS02MA
 Adafruit_AGS02MA ags;
 int TVOC_seen = 0;
-
+AGS02MA AGS(26);
 // For temp sensor
 Adafruit_MPL3115A2 baro;
 int TEMP_seen = 0;
@@ -23,30 +24,33 @@ Adafruit_VEML7700 veml = Adafruit_VEML7700();
 int LUX_seen = 0;
 
 // Soil sensor
-Adafruit_seesaw seesaw_sensor;
+Adafruit_seesaw ss;
 int SOIL_seen = 0;
 
 //For MUX
 void tcaselect(uint8_t i);
 
 //Sensor locations for MUX
-#define TVOC_ch 1
-#define TEMP_ch 2
-#define LUX_ch  3
+#define TVOC_ch 2
+#define TEMP_ch 7
+#define LUX_ch  1
 
 // Set up before the loop
 void setup() {
   Serial.begin(115200);
-  
+  tcaselect(TVOC_ch);
   //Check we have connection to sensor
-  if (! ags.begin(&Wire, 0x1A)) 
+  //if (! ags.begin(&Wire, 0x1A)) 
+  if(!AGS.begin())
   {
     Serial.println("Couldn't find AGS20MA sensor, check your wiring and pullup resistors!"); //Needs 10k pullup
   } else {
     Serial.println("Found AGS20MA sensor.");
+    AGS.setPPBMode();
+    uint8_t m = AGS.getMode();
     TVOC_seen = 1;
   }
-
+  tcaselect(TEMP_ch);
   //Check TEMP sesnor
   if (!baro.begin())
   {
@@ -57,7 +61,7 @@ void setup() {
     Serial.println("Found Temperature/Barometric sensor.");
     TEMP_seen = 1;
   }
-  
+  tcaselect(LUX_ch);
   //Check LUX sensor
   if (!veml.begin())
   {
@@ -89,7 +93,7 @@ void setup() {
     veml.interruptEnable(false);
   }
 
-  if (!seesaw_sensor.begin())
+  if (!ss.begin())
   {
     Serial.println("Soil sensor not found");
   } else {
@@ -106,6 +110,7 @@ void loop() {
   {
     tcaselect(TVOC_ch);
     Wire.setClock(10000);
+    /*
     uint32_t resistance = ags.getGasResistance();
     uint32_t tvoc = ags.getTVOC();
 
@@ -125,6 +130,10 @@ void loop() {
       Serial.print(tvoc);
       Serial.println(" ppb");
     }
+    */
+    uint32_t value = AGS.readPPB();
+    Serial.print("PPB:\t");
+    Serial.println(value);
   }
 
   //Only run if TEMP was seen
@@ -175,4 +184,3 @@ void tcaselect(uint8_t i) {
   Wire.write(1 << i);
   Wire.endTransmission();  
 }
-
