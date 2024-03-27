@@ -62,7 +62,7 @@ body {
     margin-bottom: 70px;
 }
 
-.sensor-button, .export-button, .clear-button {
+.sensor-button, .config-button, .clear-button {
     padding: 15px;
     padding-left: 30px;
     padding-right: 30px;
@@ -79,12 +79,12 @@ body {
     background-color: #45a049;
 }
 
-.export-clear-buttons {
+.config-clear-buttons {
     display: flex;
     margin-left: auto;
 }
 
-.export-button, .clear-button {
+.config-button, .clear-button {
     padding: 15px;
     margin: 0 15px;
     color: white;
@@ -93,11 +93,11 @@ body {
     transition: background-color 0.3s;
 }
 
-.export-button:hover {
+.config-button:hover {
     background-color: #0076ba;
 }
 
-.export-button {
+.config-button {
     background-color: #008CBA;
 }
 

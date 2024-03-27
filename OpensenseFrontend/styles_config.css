@@ -30,7 +30,7 @@ table {
     align-items: center;
     width: 80%;   
     border-collapse: collapse;
-    margin-top: 20px;
+    margin-top: 10px;
     margin-inline: 90px;
 }
 
@@ -65,7 +65,50 @@ th, td {
     margin-right: auto;
 }
 
+.button-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px 30px;
+    padding-bottom: 30px;
+}
+
+.save-button {
+    padding: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+    margin: 0 30px;
+    background-color: #008CBA;
+    color: white;
+    border: 1px solid #666666;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.save-button:hover {
+    background-color: #0076ba;
+}
+
+.link-button {
+    padding: 10px;
+    padding-left: 20px;
+    padding-right: 20px;
+    margin: 0 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #666666;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.link-button:hover {
+    background-color: #45a049;
+}
+
 .header {
     text-align: center;
-    padding: 10px;
+    padding: 5px;
 }
