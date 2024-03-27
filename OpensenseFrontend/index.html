@@ -3,120 +3,336 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles.css">  
+    <link rel="stylesheet" href="styles_config.css">
 
-    <title>OpenSense</title>
+    <title>OpenSense Sensor Configuration Page</title>
 </head>
 <body>
     <div class="main-container">
         <div class="header">
-            <h1>Open Sense Sensor Platform</h1>
+            <h1>Sensor Configuration Page</h1>
         </div>
         
-        <!-- Top half container -->
-        <div class="data-container">
-            <div class="data-list" id="data-list"> 
-                <!-- Data will be injected here -->
-            </div>
+        <div>
+            <table id="channel-table">
+                <tr id="channel 1">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
 
-            <div class="data-graph" id="graph-container">
-                <!-- Graph will go here -->
-            </div>
+                <tr id="channel 2">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
+
+                <tr id="channel 3">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
+
+                <tr id="channel 4">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
+
+                <tr id="channel 5">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
+
+                <tr id="channel 6">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
+
+                <tr id="channel 7">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
+
+                <tr id="channel 8">
+                    <!-- sensor drop down -->
+                    <th>
+                    <select id = "sensors">
+                        <option id="0">None</option>
+                        <option id="1">MCP9808</option>
+                        <option id="2">SGP30</option>
+                        <option id="3">ADXL343</option>
+                        <option id="4">Seesaw</option>
+                        <option id="5">VL53L4CD</option>
+                        <option id="6">BME280</option>
+                        <option id="7">TSL2591</option>
+                        <option id="8">AGS02MA</option>
+                        <option id="9">VEML7700</option>
+                        <option id="10">MPL3115A2</option>
+                    </select>
+                    </th>
+                    <!-- sensor verification -->
+                    <th>
+                    <div class="color-square"></div>
+                    </th>
+                    <!-- secondary sensor option -->
+                    <th>
+                    <select>
+                        <option value="option1">Option 1</option>
+                        <option value="option2">Option 2</option>
+                        <option value="option3">Option 3</option>
+                    </select>
+                    </th>
+                    
+                    <!-- <th>
+                    <div style="width: 50px; height: 30px; border: 1px solid black;"></div>
+                    </th> -->
+                    <!-- redirect to dataPage -->
+                    <th>
+                    <button id="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                    </th>
+                </tr>
+            </table>
         </div>
 
-        <div class="chart-info">
-            <span>Sensor data</span>
-            <span style="margin-left: 290px;">Graph</span>
-        </div>
+        <div>
 
-        <!-- Bottom half container -->
-        <div class="button-container">
-            <div class="sensor-buttons">
-                <button class="sensor-button" id="sensor1" onclick="injectDataFromFile('sensor1')">Temperature</button>
-                <button class="sensor-button" id="sensor2" onclick="injectDataFromFile('sensor2')">Air Quality</button>
-                <button class="sensor-button" id="sensor3" onclick="injectDataFromFile('sensor3')">Lux</button>
-            </div>
-            <div class="export-clear-buttons">
-                <button class="export-button" onclick="insertGraphImage()">Graph</button>
-                <button class="clear-button" onclick="clearContent()">Clear</button>
-            </div>
         </div>
     </div>
 
-    <script>
-        var intervalId;
-        var dataArray = [];
-        var lastLine = '';
-    
-        // Method to fetch data from file and inject it into the container
-        function injectDataFromFile(sensorId) {
-            clearInterval(intervalId);
-
-            var dataContainer = document.getElementById('data-list');
-            dataContainer.innerHTML = '';
-
-            fetch('data.txt')
-                .then(response => response.text())
-                .then(data => {
-                    const lines = data.split('\n');
-
-                    if (lines[lines.length - 1] !== lastLine) {
-                        dataArray = lines.reverse();
-                        lastLine = lines[lines.length - 1];
-                        injectData(sensorId);
-                    }
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-            
-        // Method to inject data into the container
-        function injectData(sensorId) {
-            intervalId = setInterval(function() {
-                var dataContainer = document.getElementById('data-list');
-    
-                if (dataArray.length > 0) {
-                    // insert backwards for top down insertion
-                    var line = dataArray.pop();
-                    var parts = line.split(', ');
-                    var newData = document.createElement('p');
-    
-                    switch(sensorId) {
-                    case 'sensor1':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[1] + " °C";
-                        break;
-                    case 'sensor2':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[2] + "PPB";
-                        break;
-                    case 'sensor3':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[3] + " lux";
-                        break;
-                    default:
-                        newData.textContent = "error";
-                    }
-    
-                    dataContainer.insertBefore(newData, dataContainer.firstChild);
-                } else {
-                    clearInterval(intervalId);
-                    dataArray = [];
-                }
-            }, 1000);
-        }
-
-        function insertGraphImage() {
-            var graphContainer = document.getElementById('graph-container');
-            graphContainer.innerHTML = '<img src="graph.png">';
-        }
-    
-        // Method to clear the content
-        function clearContent() {
-            clearInterval(intervalId);
-            var dataContainer = document.getElementById('data-list');
-            var graphContainer = document.getElementById('graph-container');
-            dataContainer.innerHTML = '';
-            graphContainer.innerHTML = '';
-            dataArray = [];
-            lastLine = '';
-        }
-    </script>    
 </body>
 </html>
