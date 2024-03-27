@@ -127,12 +127,12 @@ void pollSensors(){
     switch(channels[i]){
       case Not_Selected: break; // No sensor on channel so dont begin
       case MCP9808_Sensor: Poll_MCP9808_Sensor(); break; 
-      case SGP30_Sensor: Poll_SGP30_Sensor(); break;      
-      case ADXL343_Sensor:  Poll_ADXL343_Sensor(); break;
+      case SGP30_Sensor: Poll_SGP30_Sensor("TVOC"); break;      
+      case ADXL343_Sensor:  Poll_ADXL343_Sensor(); break; // Make
       case Seesaw_Sensor:  Poll_Seesaw_Sensor(); break;
       case VL53L4CD_Sensor:  Poll_VL53L4CD_Sensor(); break; 
-      case BME280_Sensor:  Poll_BME280_Sensor(); break; 
-      case TSL2591_Sensor:  Poll_TSL2591_Sensor(); break; 
+      case BME280_Sensor:  Poll_BME280_Sensor("Temperature"); break; 
+      case TSL2591_Sensor:  Poll_TSL2591_Sensor("Lux"); break; 
       case AGS02MA_Sensor:  Poll_AGS02MA_Sensor(); break; 
       case VEML7700_Sensor:  Poll_VEML7700_Sensor(); break;
       case MPL3115A2_Sensor:  Poll_MPL3115A2_Sensor(); break;
