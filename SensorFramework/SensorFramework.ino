@@ -135,7 +135,7 @@ void pollSensors(){
       case TSL2591_Sensor:  Poll_TSL2591_Sensor("Lux"); break; 
       case AGS02MA_Sensor:  Poll_AGS02MA_Sensor(); break; 
       case VEML7700_Sensor:  Poll_VEML7700_Sensor(); break;
-      case MPL3115A2_Sensor:  Poll_MPL3115A2_Sensor(); break;
+      case MPL3115A2_Sensor:  Poll_MPL3115A2_Sensor("Pressure"); break;
       default: break;
     }
   }
