@@ -326,52 +326,7 @@
             "MPL3115A2": ["Pressure", "Altitude", "Temperature"]
         };
     
-        // Function to populate the secondary dropdown based on the selected sensor
-        function populateSecondary(sensorSelect, secondarySelect) {
-            const selectedSensor = sensorSelect.value;
-            const secondary = secondaryOptions[selectedSensor];
-            // Clear existing options
-            secondarySelect.innerHTML = '';
-            // Add default "None" option
-            const noneOption = document.createElement('option');
-            noneOption.value = 'None';
-            noneOption.textContent = 'None';
-            secondarySelect.appendChild(noneOption);
-    
-            if (secondary && secondary.length > 0) {
-                // Add new options
-                secondary.forEach(option => {
-                    const opt = document.createElement('option');
-                    opt.value = option;
-                    opt.textContent = option;
-                    secondarySelect.appendChild(opt);
-                });
-                // Enable the secondary dropdown
-                secondarySelect.disabled = false;
-            } else {
-                // If no secondary options, disable the secondary dropdown
-                secondarySelect.disabled = true;
-            }
-        }
-    
-        // Add event listeners to each sensor dropdown
-        const sensorDropdowns = document.querySelectorAll('select[id^="sensors"]');
-        sensorDropdowns.forEach(sensorSelect => {
-            const channelId = sensorSelect.parentElement.parentElement.id;
-            const secondarySelect = document.querySelector(`#${channelId} select[id^="secondary"]`);
-            sensorSelect.addEventListener('change', () => {
-                populateSecondary(sensorSelect, secondarySelect);
-            });
-        });
-    
-        // Initialize secondary dropdowns on page load
-        window.addEventListener('DOMContentLoaded', () => {
-            sensorDropdowns.forEach(sensorSelect => {
-                const channelId = sensorSelect.parentElement.parentElement.id;
-                const secondarySelect = document.querySelector(`#${channelId} select[id^="secondary"]`);
-                populateSecondary(sensorSelect, secondarySelect);
-            });
-        });
+
     </script>
 </body>
 </html>
