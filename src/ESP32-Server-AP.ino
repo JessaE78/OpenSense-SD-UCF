@@ -31,12 +31,6 @@ void setup() {
     return;
   }
 
-  // Initialize the VEML7700 sensor
-  // if (!veml.begin()) {
-  //   Serial.println("Failed to initialize VEML7700");
-  //   while (1) delay(10);  // Hang if sensor initialization failed
-  // }
-
   File file = root.openNextFile();
   while (file) {
     if (file.isDirectory()) {
@@ -65,9 +59,6 @@ void loop() {
   if (!client) {
     return;
   }
-
-  // float lux = veml.readLux(VEML_LUX_AUTO);  // Read the light level in lux
-  // Serial.print("Lux = "); Serial.println(lux);
 
   Serial.println("New Client.");
   while (!client.available()) {
