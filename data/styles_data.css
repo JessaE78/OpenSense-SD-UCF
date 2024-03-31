@@ -1,0 +1,128 @@
+body {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100vh;
+    margin: 0;
+    background-image: url("background.png");
+    background-color: #808080;
+}
+
+.main-container {
+    width: 1000px;
+    height: 650px;
+    background-color: #ffffff;
+    border-radius: 15px;
+    border: 2px solid #000000;
+    display: flex;
+    flex-direction: column;
+}
+
+.data-container {
+    width: 700px;
+    height: 300px;
+    margin: auto;
+    border: 2px solid #000000;
+    background: linear-gradient(#000, #000) no-repeat center/1.5px 100%;
+    
+}
+
+.data-list {
+    padding-left: 15px;
+    width: 350px;
+    height: 300px;
+    overflow-y: auto;
+    float: left;
+}
+
+.data-graph {
+    width: 330px;
+    height: 300px;
+    margin-left: auto;
+}
+
+.data-graph img {
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+}
+
+.button-container {
+    display: flex;
+    flex-direction: column; 
+    align-items: center;
+    justify-content: flex-end;
+    padding: 20px 30px;
+    padding-bottom: 30px;
+}
+
+.sensor-buttons {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 70px;
+}
+
+.sensor-button, .config-button, .clear-button {
+    padding: 15px;
+    padding-left: 30px;
+    padding-right: 30px;
+    margin: 0 30px;
+    background-color: #4CAF50;
+    color: white;
+    border: 1px solid #666666;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.sensor-button:hover {
+    background-color: #45a049;
+}
+
+.config-clear-buttons {
+    display: flex;
+    margin-left: auto;
+}
+
+.config-button, .clear-button {
+    padding: 15px;
+    margin: 0 15px;
+    color: white;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+.config-button:hover {
+    background-color: #0076ba;
+}
+
+.config-button {
+    background-color: #008CBA;
+}
+
+.clear-button:hover {
+    background-color: #aa2e25;
+}
+
+.clear-button {
+    background-color: #f44336;
+}
+
+.data-spacing {
+    padding-right: 80px; 
+}
+
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+.header h1 {
+    margin: 0;
+}
+
+.chart-info {
+    text-align: center;
+    padding-bottom: 10px;
+}
