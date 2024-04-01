@@ -1,4 +1,4 @@
-
+# For OpenSense Developers
 # Using a PlatformIO Project with ESP32 in Arduino IDE
 
 ## Introduction
