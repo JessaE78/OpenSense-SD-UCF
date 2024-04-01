@@ -1,14 +1,11 @@
 #include <WiFi.h>
 #include <FS.h>
 #include <SPIFFS.h>  // Use SPIFFS instead of LittleFS
-#include "Adafruit_VEML7700.h" // Include the VEML7700 library
 
 const char* ssid = "ESP32-Access-Point";
 const char* password = "password"; // Choose a secure password
 
 WiFiServer server(80);
-
-Adafruit_VEML7700 veml = Adafruit_VEML7700(); 
 
 void setup() {
   Serial.begin(115200);
