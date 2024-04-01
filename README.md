@@ -49,6 +49,7 @@ Once installed, PlatformIO IDE will be integrated into VSCode, providing a power
 1. **Exporting PlatformIO Project**:
    - Create a new folder in your Arduino sketchbook directory for your project.
    - Copy the `src` files from your PlatformIO project to this new folder.
+   - Create a `data` folder, and place the files for the filesystem here. (Typically the frontend code)
    - For library dependencies, either install them through the Arduino IDE or copy them to the `libraries` folder in your Arduino sketchbook directory.
 
 2. **Managing Libraries and Dependencies**:
