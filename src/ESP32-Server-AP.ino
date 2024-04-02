@@ -1,22 +1,22 @@
 #include <WiFi.h>
-#include <FS.h>
-#include <SPIFFS.h>  // Use SPIFFS instead of LittleFS
+#include <SPIFFS.h>
+#include <ESPAsyncWebServer.h>
 
 const char* ssid = "ESP32-Access-Point";
-const char* password = "password"; // Choose a secure password
+const char* password = "password";
 
-WiFiServer server(80);
+AsyncWebServer server(80);
 
 void setup() {
   Serial.begin(115200);
   
   // Initialize SPIFFS
   if (!SPIFFS.begin(true)) {
-    Serial.println("Mounting SPIFFS failed.");
-    delay(1000); // Ensure message is sent over Serial before restarting
-    ESP.restart(); // Restart to re-initialize SPIFFS
+    Serial.println("An Error has occurred while mounting SPIFFS");
+    return;
   }
 
+  // List files in SPIFFS (for verification, can be removed later)
   Serial.println("Listing files:");
   File root = SPIFFS.open("/", FILE_READ);
   if (!root) {
@@ -44,63 +44,38 @@ void setup() {
 
   // Configure as Access Point
   WiFi.softAP(ssid, password);
-  IPAddress IP = WiFi.softAPIP();
   Serial.print("AP IP address: ");
-  Serial.println(IP);
+  Serial.println(WiFi.softAPIP());
 
+  // Define server routes to serve files
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/index.html", "text/html");
+  });
+
+  server.on("/dataPage.html", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/dataPage.html", "text/html");
+  });
+
+  server.on("/styles_config.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/styles_config.css", "text/css");
+  });
+
+  server.on("/styles_data.css", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/styles_data.css", "text/css");
+  });
+
+  server.on("/data.txt", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/data.txt", "text/plain");
+  });
+
+  server.on("/graph.png", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/graph.png", "image/png");
+  });
+
+  // Start server
   server.begin();
 }
 
 void loop() {
-  WiFiClient client = server.available(); // Listen for incoming clients
-  if (!client) {
-    return;
-  }
-
-  Serial.println("New Client.");
-  while (!client.available()) {
-    delay(1);
-  }
-
-  String request = client.readStringUntil('\r');
-  client.flush();
-
-  if (request.indexOf("GET / ") >= 0) {
-    sendFile(client, "/index.html", "text/html");
-  } else if (request.indexOf("GET /dataPage.html") >= 0) {
-    sendFile(client, "/dataPage.html", "text/html");
-  } else if (request.indexOf("GET /styles_config.css") >= 0) {
-    sendFile(client, "/styles_config.css", "text/css");
-  } else if (request.indexOf("GET /styles_data.css") >= 0) {
-    sendFile(client, "/styles_data.css", "text/css");
-  } else if (request.indexOf("GET /data.txt") >= 0) {
-    sendFile(client, "/data.txt", "text/plain"); // Corrected the MIME type for .txt
-  } else if (request.indexOf("GET /graph.png") >= 0) {
-    sendFile(client, "/graph.png", "image/png");}
-//  } else if (request.indexOf("GET /background.png") >= 0) {
-//    sendFile(client, "/background.png", "image/png");
-//  }
-
-  client.stop();
-  Serial.println("Client Disconnected.");
-}
-
-void sendFile(WiFiClient &client, const String &path, const String &contentType) {
-  File file = SPIFFS.open(path, FILE_READ);
-  if (!file) {
-    Serial.print("File not found: ");
-    Serial.println(path);
-    // It's important to send a HTTP 404 error if the file is not found
-    client.println("HTTP/1.1 404 Not Found");
-    client.println("Content-Type: text/plain");
-    client.println();
-    client.println("404: File Not Found");
-    return;
-  }
-
-  client.printf("HTTP/1.1 200 OK\nContent-Type: %s\n\n", contentType.c_str());
-  while (file.available()) {
-    client.write(file.read());
-  }
-  file.close();
+  // Nothing needed here
 }
