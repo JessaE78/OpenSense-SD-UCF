@@ -58,13 +58,6 @@ th, td {
     background-color: red;
 }
 
-/* Style the button */
-#link-button {
-    display: block;
-    margin-left: auto;
-    margin-right: auto;
-}
-
 .button-container {
     display: flex;
     flex-direction: column; 
@@ -102,6 +95,9 @@ th, td {
     border-radius: 5px;
     cursor: pointer;
     transition: background-color 0.3s;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .link-button:hover {
