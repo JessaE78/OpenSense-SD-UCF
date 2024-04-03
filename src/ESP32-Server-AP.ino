@@ -47,6 +47,22 @@ void setup() {
   Serial.print("AP IP address: ");
   Serial.println(WiFi.softAPIP());
 
+  // Handling the form submission
+  server.on("/configureSensors", HTTP_POST, [](AsyncWebServerRequest *request){
+    // Process each expected sensor selection
+    for (int i = 1; i <= 8; i++) { // Assuming up to 8 sensors
+      String paramName = "sensor-" + String(i);
+      if (request->hasParam(paramName, true)) {
+        String paramValue = request->getParam(paramName, true)->value();
+        Serial.println(paramName + ": " + paramValue);
+      } else {
+        Serial.println(paramName + " not found.");
+      }
+    }
+    request->send(200, "text/plain", "Configurations Received");
+  });
+
+
   // Define server routes to serve files
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", "text/html");
