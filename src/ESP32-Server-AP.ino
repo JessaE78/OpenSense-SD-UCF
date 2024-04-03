@@ -7,6 +7,8 @@ const char* password = "password";
 
 AsyncWebServer server(80);
 
+String Sensors[8];
+
 void setup() {
   Serial.begin(115200);
   
@@ -55,6 +57,7 @@ void setup() {
       if (request->hasParam(paramName, true)) {
         String paramValue = request->getParam(paramName, true)->value();
         Serial.println(paramName + ": " + paramValue);
+        Sensors[i - 1 ] = paramValue;
       } else {
         Serial.println(paramName + " not found.");
       }

@@ -357,6 +357,33 @@
                 console.error(`channel ${i} not found.`);
             }
         }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const formData = new FormData(form);
+                fetch('/configureSensors', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if(response.ok) {
+                        return response.text();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    console.log(data); // Log the response data
+                    alert('Configuration saved successfully!');
+                })
+                .catch((error) => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                    alert('Failed to save configuration.');
+                });
+            });
+         });
     </script>
 </body>
 </html>
