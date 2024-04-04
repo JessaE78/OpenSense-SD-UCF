@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,24 +13,24 @@
         <div class="header">
             <h1>Sensor Configuration Page</h1>
         </div>
-        
+        <form action="/configureSensors" method="post">
         <div>
             <table id="channel-table">
                 <tr id="channel-1">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-1">
-                        <option id="channel-1-0">None</option>
-                        <option id="channel-1-1">MCP9808</option>
-                        <option id="channel-1-2">SGP30</option>
-                        <option id="channel-1-3">ADXL343</option>
-                        <option id="channel-1-4">Seesaw</option>
-                        <option id="channel-1-5">VL53L4CD</option>
-                        <option id="channel-1-6">BME280</option>
-                        <option id="channel-1-7">TSL2591</option>
-                        <option id="channel-1-8">AGS02MA</option>
-                        <option id="channel-1-9">VEML7700</option>
-                        <option id="channel-1-10">MPL3115A2</option>
+                    <select name="sensor-1" id = "sensors-1">
+                        <option value="None" id="channel-1-0">None</option>
+                        <option value="MCP9808" id="channel-1-1">MCP9808</option>
+                        <option value="SGP30" id="channel-1-2">SGP30</option>
+                        <option value="ADXL343" id="channel-1-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-1-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-1-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-1-6">BME280</option>
+                        <option value="TSL2591" id="channel-1-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-1-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-1-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-1-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -40,7 +41,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-1">
+                    <select name = "secondary1" id="secondary-1">
 
                     </select>
                     </th>
@@ -54,18 +55,18 @@
                 <tr id="channel-2">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-2">
-                        <option id="channel-2-0">None</option>
-                        <option id="channel-2-1">MCP9808</option>
-                        <option id="channel-2-2">SGP30</option>
-                        <option id="channel-2-3">ADXL343</option>
-                        <option id="channel-2-4">Seesaw</option>
-                        <option id="channel-2-5">VL53L4CD</option>
-                        <option id="channel-2-6">BME280</option>
-                        <option id="channel-2-7">TSL2591</option>
-                        <option id="channel-2-8">AGS02MA</option>
-                        <option id="channel-2-9">VEML7700</option>
-                        <option id="channel-2-10">MPL3115A2</option>
+                    <select name="sensor-2" id = "sensors-2">
+                        <option value="None" id="channel-2-0">None</option>
+                        <option value="MCP9808" id="channel-2-1">MCP9808</option>
+                        <option value="SGP30" id="channel-2-2">SGP30</option>
+                        <option value="ADXL343" id="channel-2-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-2-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-2-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-2-6">BME280</option>
+                        <option value="TSL2591" id="channel-2-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-2-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-2-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-2-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -76,7 +77,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-2">
+                    <select name = "secondary2" id="secondary-2">
 
                     </select>
                     </th>
@@ -90,18 +91,18 @@
                 <tr id="channel-3">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-3">
-                        <option id="channel-3-0">None</option>
-                        <option id="channel-3-1">MCP9808</option>
-                        <option id="channel-3-2">SGP30</option>
-                        <option id="channel-3-3">ADXL343</option>
-                        <option id="channel-3-4">Seesaw</option>
-                        <option id="channel-3-5">VL53L4CD</option>
-                        <option id="channel-3-6">BME280</option>
-                        <option id="channel-3-7">TSL2591</option>
-                        <option id="channel-3-8">AGS02MA</option>
-                        <option id="channel-3-9">VEML7700</option>
-                        <option id="channel-3-10">MPL3115A2</option>
+                    <select name="sensor-3" id = "sensors-3">
+                        <option value="None" id="channel-3-0">None</option>
+                        <option value="MCP9808" id="channel-3-1">MCP9808</option>
+                        <option value="SGP30" id="channel-1-3">SGP30</option>
+                        <option value="ADXL343" id="channel-3-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-3-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-3-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-3-6">BME280</option>
+                        <option value="TSL2591" id="channel-3-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-3-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-3-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-3-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -112,7 +113,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-3">
+                    <select name = "secondary3" id="secondary-3">
 
                     </select>
                     </th>
@@ -126,18 +127,18 @@
                 <tr id="channel-4">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-4">
-                        <option id="channel-4-0">None</option>
-                        <option id="channel-4-1">MCP9808</option>
-                        <option id="channel-4-2">SGP30</option>
-                        <option id="channel-4-3">ADXL343</option>
-                        <option id="channel-4-4">Seesaw</option>
-                        <option id="channel-4-5">VL53L4CD</option>
-                        <option id="channel-4-6">BME280</option>
-                        <option id="channel-4-7">TSL2591</option>
-                        <option id="channel-4-8">AGS02MA</option>
-                        <option id="channel-4-9">VEML7700</option>
-                        <option id="channel-4-10">MPL3115A2</option>
+                    <select name="sensor-4" id = "sensors-4">
+                        <option value="None" id="channel-4-0">None</option>
+                        <option value="MCP9808" id="channel-4-1">MCP9808</option>
+                        <option value="SGP30" id="channel-4-2">SGP30</option>
+                        <option value="ADXL343" id="channel-4-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-4-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-4-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-4-6">BME280</option>
+                        <option value="TSL2591" id="channel-4-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-4-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-4-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-4-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -148,7 +149,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-4">
+                    <select name = "secondary4" id="secondary-4">
 
                     </select>
                     </th>
@@ -162,18 +163,18 @@
                 <tr id="channel-5">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-5">
-                        <option id="channel-5-0">None</option>
-                        <option id="channel-5-1">MCP9808</option>
-                        <option id="channel-5-2">SGP30</option>
-                        <option id="channel-5-3">ADXL343</option>
-                        <option id="channel-5-4">Seesaw</option>
-                        <option id="channel-5-5">VL53L4CD</option>
-                        <option id="channel-5-6">BME280</option>
-                        <option id="channel-5-7">TSL2591</option>
-                        <option id="channel-5-8">AGS02MA</option>
-                        <option id="channel-5-9">VEML7700</option>
-                        <option id="channel-5-10">MPL3115A2</option>
+                    <select name="sensor-5" id = "sensors-5">
+                        <option value="None" id="channel-5-0">None</option>
+                        <option value="MCP9808" id="channel-5-1">MCP9808</option>
+                        <option value="SGP30" id="channel-5-2">SGP30</option>
+                        <option value="ADXL343" id="channel-5-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-5-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-5-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-5-6">BME280</option>
+                        <option value="TSL2591" id="channel-5-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-5-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-5-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-5-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -184,7 +185,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-5">
+                    <select name = "secondary5" id="secondary-5">
 
                     </select>
                     </th>
@@ -198,18 +199,18 @@
                 <tr id="channel-6">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-6">
-                        <option id="channel-6-0">None</option>
-                        <option id="channel-6-1">MCP9808</option>
-                        <option id="channel-6-2">SGP30</option>
-                        <option id="channel-6-3">ADXL343</option>
-                        <option id="channel-6-4">Seesaw</option>
-                        <option id="channel-6-5">VL53L4CD</option>
-                        <option id="channel-6-6">BME280</option>
-                        <option id="channel-6-7">TSL2591</option>
-                        <option id="channel-6-8">AGS02MA</option>
-                        <option id="channel-6-9">VEML7700</option>
-                        <option id="channel-6-10">MPL3115A2</option>
+                    <select name="sensor-6" id = "sensors-6">
+                        <option value="None" id="channel-6-0">None</option>
+                        <option value="MCP9808" id="channel-6-1">MCP9808</option>
+                        <option value="SGP30" id="channel-6-2">SGP30</option>
+                        <option value="ADXL343" id="channel-6-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-6-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-6-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-6-6">BME280</option>
+                        <option value="TSL2591" id="channel-6-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-6-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-6-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-6-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -220,7 +221,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-6">
+                    <select name = "secondary6" id="secondary-6">
 
                     </select>
                     </th>
@@ -234,18 +235,18 @@
                 <tr id="channel-7">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-7">
-                        <option id="channel-7-0">None</option>
-                        <option id="channel-7-1">MCP9808</option>
-                        <option id="channel-7-2">SGP30</option>
-                        <option id="channel-7-3">ADXL343</option>
-                        <option id="channel-7-4">Seesaw</option>
-                        <option id="channel-7-5">VL53L4CD</option>
-                        <option id="channel-7-6">BME280</option>
-                        <option id="channel-7-7">TSL2591</option>
-                        <option id="channel-7-8">AGS02MA</option>
-                        <option id="channel-7-9">VEML7700</option>
-                        <option id="channel-7-10">MPL3115A2</option>
+                    <select name="sensor-7" id = "sensors-7">
+                        <option value="None" id="channel-7-0">None</option>
+                        <option value="MCP9808" id="channel-7-1">MCP9808</option>
+                        <option value="SGP30" id="channel-7-2">SGP30</option>
+                        <option value="ADXL343" id="channel-7-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-7-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-7-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-7-6">BME280</option>
+                        <option value="TSL2591" id="channel-7-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-7-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-7-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-7-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -256,7 +257,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-7">
+                    <select name = "secondary7" id="secondary-7">
 
                     </select>
                     </th>
@@ -270,18 +271,18 @@
                 <tr id="channel-8">
                     <!-- sensor drop down -->
                     <th>
-                    <select id = "sensors-8">
-                        <option id="channel-8-0">None</option>
-                        <option id="channel-8-1">MCP9808</option>
-                        <option id="channel-8-2">SGP30</option>
-                        <option id="channel-8-3">ADXL343</option>
-                        <option id="channel-8-4">Seesaw</option>
-                        <option id="channel-8-5">VL53L4CD</option>
-                        <option id="channel-8-6">BME280</option>
-                        <option id="channel-8-7">TSL2591</option>
-                        <option id="channel-8-8">AGS02MA</option>
-                        <option id="channel-8-9">VEML7700</option>
-                        <option id="channel-8-10">MPL3115A2</option>
+                    <select name="sensor-8" id = "sensors-8">
+                        <option value="None" id="channel-8-0">None</option>
+                        <option value="MCP9808" id="channel-8-1">MCP9808</option>
+                        <option value="SGP30" id="channel-8-2">SGP30</option>
+                        <option value="ADXL343" id="channel-8-3">ADXL343</option>
+                        <option value="Seesaw" id="channel-8-4">Seesaw</option>
+                        <option value="VL53L4CD" id="channel-8-5">VL53L4CD</option>
+                        <option value="BME280" id="channel-8-6">BME280</option>
+                        <option value="TSL2591" id="channel-8-7">TSL2591</option>
+                        <option value="AGS02MA" id="channel-8-8">AGS02MA</option>
+                        <option value="VEML7700" id="channel-8-9">VEML7700</option>
+                        <option value="MPL3115A2" id="channel-8-10">MPL3115A2</option>
                     </select>
                     </th>
                     
@@ -292,7 +293,7 @@
                     
                     <!-- secondary sensor option -->
                     <th>
-                    <select id="secondary-8">
+                    <select name = "secondary8" id="secondary-8">
 
                     </select>
                     </th>
@@ -306,10 +307,10 @@
         </div>
 
         <div class="button-container">
-            <button class="save-button" id="save-button">Save</button>
+            <button type="submit" class="save-button" id="save-button">Save</button>
         </div>
+        </form>
     </div>
-
     <script>
         const secondaryOptions = {
             "SGP30": ["TVOC", "eCO2"],
@@ -341,21 +342,83 @@
             }
         }
 
+        function handlePrimarySelectChange() {
+            const index = this.id.split("-")[1];
+            const button = document.getElementById(`channel-${index}-button`);
+            
+            if (document.getElementById('save-button').clicked) {
+                if (this.value !== "None") {
+                    button.classList.remove('disabled');
+                    button.removeAttribute('disabled');
+                } else {
+                    button.classList.add('disabled');
+                    button.setAttribute('disabled', 'true');
+                }
+            }
+            
+            updateSecondaryOptions(this, document.getElementById(`secondary-${index}`));
+        }
+
         for (let i = 1; i <= 8; i++) {
             const primarySelect = document.getElementById(`sensors-${i}`);
             const secondarySelect = document.getElementById(`secondary-${i}`);
             
             if (primarySelect) {
-                primarySelect.addEventListener('change', function() {
-                    updateSecondaryOptions(this, secondarySelect);
-                });
-                
+                primarySelect.addEventListener('change', handlePrimarySelectChange);
                 updateSecondaryOptions(primarySelect, secondarySelect);
-            } 
-            else {
+                
+                const button = document.getElementById(`channel-${i}-button`);
+                button.classList.add('disabled');
+                button.setAttribute('disabled', 'true');
+            } else {
                 console.error(`channel ${i} not found.`);
             }
         }
+
+        document.getElementById('save-button').addEventListener('click', function() {
+            this.clicked = true;
+            const primarySelects = document.querySelectorAll('[id^=sensors]');
+            
+            primarySelects.forEach(select => {
+                const index = select.id.split("-")[1];
+                const button = document.getElementById(`channel-${index}-button`);
+                
+                if (select.value !== "None") {
+                    button.classList.remove('disabled');
+                    button.removeAttribute('disabled');
+                } else {
+                    button.classList.add('disabled');
+                    button.setAttribute('disabled', 'true');
+                }
+            });
+        });
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function(event) {
+                event.preventDefault(); // Prevent the default form submission
+
+                const formData = new FormData(form);
+                fetch('/configureSensors', {
+                    method: 'POST',
+                    body: formData
+                })
+                .then(response => {
+                    if(response.ok) {
+                        return response.text();
+                    }
+                    throw new Error('Network response was not ok.');
+                })
+                .then(data => {
+                    console.log(data); // Log the response data
+                    alert('Configuration saved successfully!');
+                })
+                .catch((error) => {
+                    console.error('There has been a problem with your fetch operation:', error);
+                    alert('Failed to save configuration.');
+                });
+            });
+         });
     </script>
 </body>
 </html>

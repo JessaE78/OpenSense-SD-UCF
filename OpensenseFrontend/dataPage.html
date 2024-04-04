@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,12 +33,13 @@
         <!-- Bottom half container -->
         <div class="button-container">
             <div class="sensor-buttons">
-                <button class="sensor-button" id="sensor1" onclick="injectDataFromFile('sensor1')">Start</button>
-                <button class="sensor-button" id="sensor2" onclick="injectDataFromFile('sensor2')">Stop</button>
+                <button class="sensor-button" id="sensor1">Start</button>
+                <button class="sensor-button" id="sensor2">Stop</button>
                 <button class="sensor-button" id="sensor3" onclick="insertGraphImage()">Graph</button>
             </div>
             <div class="config-clear-buttons">
                 <button class="clear-button" onclick="clearContent()">Clear</button>
+                <!-- <button class="config-button" onclick="window.location.href = '/ ';">Return</button> -->
                 <button class="config-button" onclick="window.location.href = 'index.html';">Return</button>
             </div>
         </div>
@@ -47,60 +49,6 @@
         var intervalId;
         var dataArray = [];
         var lastLine = '';
-    
-        // Method to fetch data from file and inject it into the container
-        function injectDataFromFile(sensorId) {
-            clearInterval(intervalId);
-
-            var dataContainer = document.getElementById('data-list');
-            dataContainer.innerHTML = '';
-
-            fetch('data.txt')
-                .then(response => response.text())
-                .then(data => {
-                    const lines = data.split('\n');
-
-                    if (lines[lines.length - 1] !== lastLine) {
-                        dataArray = lines.reverse();
-                        lastLine = lines[lines.length - 1];
-                        injectData(sensorId);
-                    }
-                })
-                .catch(error => console.error('Error fetching data:', error));
-        }
-            
-        // Method to inject data into the container
-        function injectData(sensorId) {
-            intervalId = setInterval(function() {
-                var dataContainer = document.getElementById('data-list');
-    
-                if (dataArray.length > 0) {
-                    // insert backwards for top down insertion
-                    var line = dataArray.pop();
-                    var parts = line.split(', ');
-                    var newData = document.createElement('p');
-    
-                    switch(sensorId) {
-                    case 'sensor1':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[1] + " °C";
-                        break;
-                    case 'sensor2':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[2] + " PPB";
-                        break;
-                    case 'sensor3':
-                        newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[3] + " lux";
-                        break;
-                    default:
-                        newData.textContent = "error";
-                    }
-    
-                    dataContainer.insertBefore(newData, dataContainer.firstChild);
-                } else {
-                    clearInterval(intervalId);
-                    dataArray = [];
-                }
-            }, 1000);
-        }
 
         function insertGraphImage() {
             var graphContainer = document.getElementById('graph-container');
@@ -117,6 +65,60 @@
             dataArray = [];
             lastLine = '';
         }
+
+        // Method to fetch data from file and inject it into the container
+        // function injectDataFromFile(sensorId) {
+        //     clearInterval(intervalId);
+
+        //     var dataContainer = document.getElementById('data-list');
+        //     dataContainer.innerHTML = '';
+
+        //     fetch('data.txt')
+        //         .then(response => response.text())
+        //         .then(data => {
+        //             const lines = data.split('\n');
+
+        //             if (lines[lines.length - 1] !== lastLine) {
+        //                 dataArray = lines.reverse();
+        //                 lastLine = lines[lines.length - 1];
+        //                 injectData(sensorId);
+        //             }
+        //         })
+        //         .catch(error => console.error('Error fetching data:', error));
+        // }
+            
+        // Method to inject data into the container
+        // function injectData(sensorId) {
+        //     intervalId = setInterval(function() {
+        //         var dataContainer = document.getElementById('data-list');
+    
+        //         if (dataArray.length > 0) {
+        //             // insert backwards for top down insertion
+        //             var line = dataArray.pop();
+        //             var parts = line.split(', ');
+        //             var newData = document.createElement('p');
+    
+        //             switch(sensorId) {
+        //             case 'sensor1':
+        //                 newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[1] + " °C";
+        //                 break;
+        //             case 'sensor2':
+        //                 newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[2] + " PPB";
+        //                 break;
+        //             case 'sensor3':
+        //                 newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[3] + " lux";
+        //                 break;
+        //             default:
+        //                 newData.textContent = "error";
+        //             }
+    
+        //             dataContainer.insertBefore(newData, dataContainer.firstChild);
+        //         } else {
+        //             clearInterval(intervalId);
+        //             dataArray = [];
+        //         }
+        //     }, 1000);
+        // }
     </script>    
 </body>
 </html>
