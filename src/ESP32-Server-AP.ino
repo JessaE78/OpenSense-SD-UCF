@@ -7,7 +7,7 @@ const char* password = "password";
 
 AsyncWebServer server(80);
 
-String Sensors[8];
+String Sensors[8], SecondarySensors[8];
 
 void setup() {
   Serial.begin(115200);
@@ -49,17 +49,29 @@ void setup() {
   Serial.print("AP IP address: ");
   Serial.println(WiFi.softAPIP());
 
-  // Handling the form submission
+// Handling the form submission for both primary and secondary sensors
   server.on("/configureSensors", HTTP_POST, [](AsyncWebServerRequest *request){
-    // Process each expected sensor selection
-    for (int i = 1; i <= 8; i++) { // Assuming up to 8 sensors
-      String paramName = "sensor-" + String(i);
-      if (request->hasParam(paramName, true)) {
-        String paramValue = request->getParam(paramName, true)->value();
-        Serial.println(paramName + ": " + paramValue);
-        Sensors[i - 1 ] = paramValue;
+    // Process each expected primary and secondary sensor selection
+    for (int i = 1; i <= 8; i++) {
+      String primaryParamName = "sensor-" + String(i);
+      String secondaryParamName = "secondary" + String(i);
+      
+      // Primary sensor
+      if (request->hasParam(primaryParamName, true)) {
+        String primaryParamValue = request->getParam(primaryParamName, true)->value();
+        Sensors[i - 1] = primaryParamValue;
+        Serial.println(primaryParamName + ": " + primaryParamValue);
       } else {
-        Serial.println(paramName + " not found.");
+        Serial.println(primaryParamName + " not found.");
+      }
+      
+      // Secondary sensor
+      if (request->hasParam(secondaryParamName, true)) {
+        String secondaryParamValue = request->getParam(secondaryParamName, true)->value();
+        SecondarySensors[i - 1] = secondaryParamValue;
+        Serial.println(secondaryParamName + ": " + secondaryParamValue);
+      } else {
+        Serial.println(secondaryParamName + " not found.");
       }
     }
     request->send(200, "text/plain", "Configurations Received");
