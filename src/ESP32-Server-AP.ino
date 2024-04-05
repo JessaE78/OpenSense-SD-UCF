@@ -1,3 +1,5 @@
+// Ricardo K. Colon
+// Open Sense 
 #include <WiFi.h>
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
@@ -8,6 +10,17 @@ const char* password = "password";
 AsyncWebServer server(80);
 
 String Sensors[8], SecondarySensors[8];
+
+String getSensorData() {
+    // Generate a random temperature between 20.0 and 30.0 degrees Celsius
+    float temperature = random(200, 301) / 10.0;
+
+    // Create a JSON-formatted string with the random temperature
+    String jsonData = "{\"temperature\":" + String(temperature) + "}";
+
+    return jsonData;
+}
+
 
 void setup() {
   Serial.begin(115200);
@@ -77,7 +90,6 @@ void setup() {
     request->send(200, "text/plain", "Configurations Received");
   });
 
-
   // Define server routes to serve files
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
     request->send(SPIFFS, "/index.html", "text/html");
@@ -103,10 +115,20 @@ void setup() {
     request->send(SPIFFS, "/graph.png", "image/png");
   });
 
+  server.on("/background.png", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/background.png", "image/png");
+  });
+
+  server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request){
+      String sensorData = getSensorData(); 
+      request->send(200, "application/json", sensorData);
+  });
+
   // Start server
   server.begin();
 }
 
 void loop() {
-  // Nothing needed here
+  // Using noise from an unconnected analog pin for randomness.
+  randomSeed(analogRead(0));
 }
