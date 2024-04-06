@@ -48,7 +48,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-1-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-1-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
 
@@ -84,7 +84,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-2-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-2-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
 
@@ -120,7 +120,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-3-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-3-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
 
@@ -156,7 +156,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-4-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-4-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
 
@@ -192,7 +192,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-5-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-5-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
 
@@ -228,7 +228,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-6-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-6-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
 
@@ -264,7 +264,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-7-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-7-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
 
@@ -300,7 +300,7 @@
                     
                     <!-- redirect to dataPage -->
                     <th>
-                        <button id="channel-8-button" class="link-button" onclick="window.location.href = 'dataPage.html';">Data Page</button>
+                        <button id="channel-8-button" class="link-button"  >Data Page</button>
                     </th>
                 </tr>
             </table>
@@ -419,23 +419,30 @@
                     alert('Failed to save configuration.');
                 });
             });
+
+            // Function to handle redirection with parameters
+            function redirectToDataPage(channelNumber) {
+                const primarySensorSelect = document.getElementById(`sensors-${channelNumber}`);
+                const secondarySensorSelect = document.getElementById(`secondary-${channelNumber}`);
+                const primarySensorValue = primarySensorSelect.value;
+                const secondarySensorValue = secondarySensorSelect ? secondarySensorSelect.value : '';
+
+                // Construct the redirection URL with query parameters
+                const url = `dataPage.html?channel=${channelNumber}&primary=${encodeURIComponent(primarySensorValue)}&secondary=${encodeURIComponent(secondarySensorValue)}`;
+                window.location.href = url;
+            }
+
+            // Attach the redirect function to each "Data Page" button
+            for (let i = 1; i <= 8; i++) {
+                const button = document.getElementById(`channel-${i}-button`);
+                if (button) {
+                    button.addEventListener('click', function(event) {
+                        event.preventDefault(); // Prevent form submission or any default action
+                        redirectToDataPage(i);
+                    });
+                }
+            }
          });
-
-        // Might change this but we will see
-        function startPolling() {
-            const pollingInterval = 1000; // milliseconds
-
-            setInterval(() => {
-            fetch('/get-sensor-data')
-            .then(response => response.json())
-            .then(data => {
-                console.log(data); 
-            })
-            .catch(error => console.error("Error fetching sensor data:", error));
-            }, pollingInterval);
-        }
-        // Tie the start button with the 'startPolling' function
-        document.getElementById("start").addEventListener("click", startPolling);
     </script>
 </body>
 </html>

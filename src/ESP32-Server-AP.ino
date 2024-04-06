@@ -11,16 +11,21 @@ AsyncWebServer server(80);
 
 String Sensors[8], SecondarySensors[8];
 
-String getSensorData() {
-    // Generate a random temperature between 20.0 and 30.0 degrees Celsius
-    float temperature = random(200, 301) / 10.0;
-
-    // Create a JSON-formatted string with the random temperature
-    String jsonData = "{\"temperature\":" + String(temperature) + "}";
-
-    return jsonData;
+// Function to simulate sensor data based on sensor type
+String simulateSensorData(const String& sensorType) {
+    if (sensorType == "MCP9808") {
+        // Simulate a temperature reading for MCP9808
+        return "{\"sensor\":\"MCP9808\", \"temperature\":" + String(random(20, 30)) + "}";
+    } else if (sensorType == "SGP30") {
+        // Simulate air quality readings for SGP30
+        return "{\"sensor\":\"SGP30\", \"TVOC\":" + String(random(100, 500)) + ", \"eCO2\":" + String(random(400, 1000)) + "}";
+    }
+    // I need to add more sensors
+    else {
+        // Default case for unspecified or unknown sensor
+        return "{\"sensor\":\"Unknown\", \"message\":\"No data available\"}";
+    }
 }
-
 
 void setup() {
   Serial.begin(115200);
@@ -120,7 +125,8 @@ void setup() {
   });
 
   server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request){
-      String sensorData = getSensorData(); 
+      String sensorType = request->hasParam("primary") ? request->getParam("primary")->value() : "None";
+      String sensorData = simulateSensorData(sensorType);
       request->send(200, "application/json", sensorData);
   });
 
@@ -130,5 +136,5 @@ void setup() {
 
 void loop() {
   // Using noise from an unconnected analog pin for randomness.
-  randomSeed(analogRead(0));
+  randomSeed(analogRead(32));
 }

@@ -33,8 +33,8 @@
         <!-- Bottom half container -->
         <div class="button-container">
             <div class="sensor-buttons">
-                <button class="sensor-button" id="sensor1" onclick="startFetchingData()">Start</button>
-                <button class="sensor-button" id="sensor2" onclick="stopFetchingData()">Stop</button>
+                <button class="sensor-button" id="sensor1" >Start</button>
+                <button class="sensor-button" id="sensor2" >Stop</button>
                 <button class="sensor-button" id="sensor3" onclick="insertGraphImage()">Graph</button>
             </div>
             <div class="config-clear-buttons">
@@ -119,32 +119,64 @@
         //         }
         //     }, 1000);
         // }
-        function startFetchingData() {
+        // function startFetchingData() {
 
-            intervalId = setInterval(() => {
-                fetch('/get-sensor-data')
-                    .then(response => response.json())
-                    .then(data => {
-                    // How the data should look using JSON: { "temperature": 24.5 }
-                    displayData(data);
-                    })
-                .catch(error => console.error("Error fetching data:", error));
-            }, 1000); // Sets the interval; controls the speed
-        }
+        //     intervalId = setInterval(() => {
+        //         fetch('/get-sensor-data')
+        //             .then(response => response.json())
+        //             .then(data => {
+        //             // How the data should look using JSON: { "temperature": 24.5 }
+        //             displayData(data);
+        //             })
+        //         .catch(error => console.error("Error fetching data:", error));
+        //     }, 1000); // Sets the interval; controls the speed
+        // }
         
-        // Stops the data fetching
-        function stopFetchingData() {
-            clearInterval(intervalId);
-        }
+        // // Stops the data fetching
+        // function stopFetchingData() {
+        //     clearInterval(intervalId);
+        // }
         
-        // Displays the data inline and using a stackish type (FIFO)
-        function displayData(data) {
-            const dataContainer = document.getElementById('data-list');
-            const newDataElement = document.createElement('p');
-            newDataElement.textContent = `Temperature: ${data.temperature} °C`;
-            dataContainer.appendChild(newDataElement);
+        // // Displays the data inline and using a stackish type (FIFO)
+        // function displayData(data) {
+        //     const dataContainer = document.getElementById('data-list');
+        //     const newDataElement = document.createElement('p');
+        //     newDataElement.textContent = `Temperature: ${data.temperature} °C`;
+        //     dataContainer.appendChild(newDataElement);
+        // }
+        // Parses URL query parameters
+        function getQueryParams() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                channel: params.get('channel'),
+                primary: params.get('primary'),
+                secondary: params.get('secondary')
+            };
         }
 
+        // Fetches and displays sensor data
+        function fetchAndDisplaySensorData() {
+            const { primary } = getQueryParams();
+            if (!primary || primary === 'None') {
+                console.log("No sensor selected or sensor is 'None'");
+                return;
+            }
+
+            const url = `/get-sensor-data?primary=${primary}`;
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const dataContainer = document.getElementById('data-list');
+                    const dataElement = document.createElement('p');
+                    dataElement.textContent = JSON.stringify(data);
+                    dataContainer.appendChild(dataElement);
+                })
+                .catch(error => console.error("Error fetching sensor data:", error));
+        }
+
+        document.addEventListener('DOMContentLoaded', () => {
+            fetchAndDisplaySensorData();
+        });
     </script>    
 </body>
 </html>
