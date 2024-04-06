@@ -33,8 +33,8 @@
         <!-- Bottom half container -->
         <div class="button-container">
             <div class="sensor-buttons">
-                <button class="sensor-button" id="sensor1" >Start</button>
-                <button class="sensor-button" id="sensor2" >Stop</button>
+                <button class="sensor-button" id="startButton" >Start</button>
+                <button class="sensor-button" id="stopButton" >Stop</button>
                 <button class="sensor-button" id="sensor3" onclick="insertGraphImage()">Graph</button>
             </div>
             <div class="config-clear-buttons">
@@ -65,7 +65,7 @@
             dataArray = [];
             lastLine = '';
         }
-
+        
         // Method to fetch data from file and inject it into the container
         // function injectDataFromFile(sensorId) {
         //     clearInterval(intervalId);
@@ -144,7 +144,56 @@
         //     newDataElement.textContent = `Temperature: ${data.temperature} °C`;
         //     dataContainer.appendChild(newDataElement);
         // }
-        // Parses URL query parameters
+
+        var intervalId; // Used to store the interval for polling sensor data
+
+        document.getElementById('startButton').addEventListener('click', function() {
+            findAndPollSensors(); // Start polling when clicked
+        });
+
+        document.getElementById('stopButton').addEventListener('click', function() {
+            if (intervalId) {
+                clearInterval(intervalId); // Stop polling
+                intervalId = null;
+            }
+        });
+
+        function findAndPollSensors() {
+            const { primary, secondary } = getQueryParams();
+            if (!primary || primary === 'None') {
+                console.log("No primary sensor selected or sensor is 'None'");
+                return;
+            }
+
+            // Logic for secondary sensor similar to primary needs implementing
+
+            // Clear existing interval if it exists
+            if (intervalId) {
+                clearInterval(intervalId);
+            }
+
+            // Start new interval for polling
+            intervalId = setInterval(() => {
+                fetchAndDisplaySensorData(primary, secondary); // Adjusted to pass sensors
+            }, 2000); // Poll every 2 seconds, adjust as needed
+        }
+
+        // Adjusted to take sensor parameters directly
+        function fetchAndDisplaySensorData(primary, secondary) {
+            const url = `/get-sensor-data?primary=${primary}&secondary=${secondary}`; // Example URL, adjust as needed
+            fetch(url)
+                .then(response => response.json())
+                .then(data => {
+                    const dataContainer = document.getElementById('data-list');
+                    // Consider clearing previous data or managing how data is appended
+                    dataContainer.innerHTML = ''; 
+                    const dataElement = document.createElement('p');
+                    dataElement.textContent = `Primary: ${data.primary}, Value: ${data.value}`; // Example display, adjust as needed
+                    dataContainer.appendChild(dataElement);
+                })
+                .catch(error => console.error("Error fetching sensor data:", error));
+        }
+
         function getQueryParams() {
             const params = new URLSearchParams(window.location.search);
             return {
@@ -153,30 +202,6 @@
                 secondary: params.get('secondary')
             };
         }
-
-        // Fetches and displays sensor data
-        function fetchAndDisplaySensorData() {
-            const { primary } = getQueryParams();
-            if (!primary || primary === 'None') {
-                console.log("No sensor selected or sensor is 'None'");
-                return;
-            }
-
-            const url = `/get-sensor-data?primary=${primary}`;
-            fetch(url)
-                .then(response => response.json())
-                .then(data => {
-                    const dataContainer = document.getElementById('data-list');
-                    const dataElement = document.createElement('p');
-                    dataElement.textContent = JSON.stringify(data);
-                    dataContainer.appendChild(dataElement);
-                })
-                .catch(error => console.error("Error fetching sensor data:", error));
-        }
-
-        document.addEventListener('DOMContentLoaded', () => {
-            fetchAndDisplaySensorData();
-        });
     </script>    
 </body>
 </html>

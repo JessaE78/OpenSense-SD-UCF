@@ -11,20 +11,45 @@ AsyncWebServer server(80);
 
 String Sensors[8], SecondarySensors[8];
 
-// Function to simulate sensor data based on sensor type
-String simulateSensorData(const String& sensorType) {
-    if (sensorType == "MCP9808") {
-        // Simulate a temperature reading for MCP9808
-        return "{\"sensor\":\"MCP9808\", \"temperature\":" + String(random(20, 30)) + "}";
-    } else if (sensorType == "SGP30") {
-        // Simulate air quality readings for SGP30
-        return "{\"sensor\":\"SGP30\", \"TVOC\":" + String(random(100, 500)) + ", \"eCO2\":" + String(random(400, 1000)) + "}";
-    }
-    // I need to add more sensors
-    else {
-        // Default case for unspecified or unknown sensor
-        return "{\"sensor\":\"Unknown\", \"message\":\"No data available\"}";
-    }
+float readMCP9808() {
+  // Simulate reading 
+  return 25.0 + (random(100) / 10.0);
+}
+float readSeesaw() {
+  // Simulate reading 
+  return 50.0 + (random(65) / 10.0);
+}
+float readSGP30() {
+  // Simulate reading 
+  return 50.0 + (random(90) / 10.0);
+}
+float readADXL343() {
+  // Simulate reading 
+  return 50.0 + (random(15) / 10.0);
+}
+float readVL53L4CD() {
+  // Simulate reading 
+  return 50.0 + (random(80) / 10.0);
+}
+float readBME280() {
+  // Simulate reading 
+  return 50.0 + (random(40) / 10.0);
+}
+float readTSL2591() {
+  // Simulate reading 
+  return 50.0 + (random(30) / 10.0);
+}
+float readAGS02MA() {
+  // Simulate reading 
+  return 50.0 + (random(60) / 10.0);
+}
+float readVEML7700() {
+  // Simulate reading 
+  return 50.0 + (random(100) / 10.0);
+}
+float readMPL3115A2() {
+  // Simulate reading 
+  return 50.0 + (random(20) / 10.0);
 }
 
 void setup() {
@@ -124,10 +149,60 @@ void setup() {
     request->send(SPIFFS, "/background.png", "image/png");
   });
 
-  server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request){
-      String sensorType = request->hasParam("primary") ? request->getParam("primary")->value() : "None";
-      String sensorData = simulateSensorData(sensorType);
-      request->send(200, "application/json", sensorData);
+// Sensor data endpoint
+  server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request) {
+    String sensorData;
+    if (request->hasParam("primary")) {
+      String primarySensor = request->getParam("primary")->value();
+      // Example: Determine the sensor type and fetch its data
+      if (primarySensor == "MCP9808") {
+          float temp = readMCP9808();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"MCP9808\", \"value\": " + String(temp) + "}";
+      } else if (primarySensor == "Seesaw") {
+          float humidity = readSeesaw();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"Seesaw\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "SGP30") {
+          float humidity = readSGP30();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"SGP30\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "ADXL343") {
+          float humidity = readADXL343();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"ADXL343\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "VL53L4CD") {
+          float humidity = readVL53L4CD();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "BME280") {
+          float humidity = readBME280();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"BME280\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "TSL2591") {
+          float humidity = readTSL2591();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"TSL2591\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "AGS02MA") {
+          float humidity = readAGS02MA();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"AGS02MA\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "VEML7700") {
+          float humidity = readVEML7700();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(humidity) + "}";
+      } else if (primarySensor == "MPL3115A2") {
+          float humidity = readMPL3115A2();
+          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(humidity) + "}";
+      }
+      else {
+          sensorData = "{\"error\": \"Unknown sensor\"}";
+      }
+    } else {
+      sensorData = "{\"error\": \"No sensor specified\"}";
+    }
+    request->send(200, "application/json", sensorData);
   });
 
   // Start server
