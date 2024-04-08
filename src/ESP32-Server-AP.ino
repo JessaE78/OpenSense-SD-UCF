@@ -3,6 +3,10 @@
 #include <WiFi.h>
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
+#include "Adafruit_VEML7700.h"
+#include <Adafruit_MPL3115A2.h>
+#include "Adafruit_MCP9808.h"
+
 
 const char* ssid = "ESP32-Access-Point";
 const char* password = "password";
@@ -10,10 +14,27 @@ const char* password = "password";
 AsyncWebServer server(80);
 
 String Sensors[8], SecondarySensors[8];
+Adafruit_VEML7700 veml = Adafruit_VEML7700();
+Adafruit_MPL3115A2 baro;
+Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
+
+
+#define TCAADDR 0x70
+
+void tcaselect(uint8_t i) {
+  if (i > 7) return;
+ 
+  Wire.beginTransmission(TCAADDR);
+  Wire.write(1 << i);
+  Wire.endTransmission();  
+}
 
 float readMCP9808() {
-  // Simulate reading 
-  return 25.0 + (random(100) / 10.0);
+  tcaselect(2);
+  tempsensor.wake();
+  float f = tempsensor.readTempF();
+  tempsensor.shutdown_wake(1);
+  return f;
 }
 float readSeesaw() {
   // Simulate reading 
@@ -44,17 +65,28 @@ float readAGS02MA() {
   return 50.0 + (random(60) / 10.0);
 }
 float readVEML7700() {
-  // Simulate reading 
-  return 50.0 + (random(100) / 10.0);
+  tcaselect(1);
+  float lux = veml.readLux(VEML_LUX_AUTO);
+
+  return lux;
 }
 float readMPL3115A2() {
-  // Simulate reading 
-  return 50.0 + (random(20) / 10.0);
+  float temperature = baro.getTemperature();
+  return temperature;
 }
 
 void setup() {
   Serial.begin(115200);
-  
+
+  tcaselect(1);
+  veml.begin();
+
+  // tcaselect(2);
+  // // baro.begin();
+  // // baro.setSeaPressure(1013.26);
+  // tempsensor.begin(0x18);
+  // tempsensor.setResolution(3);
+
   // Initialize SPIFFS
   if (!SPIFFS.begin(true)) {
     Serial.println("An Error has occurred while mounting SPIFFS");
@@ -188,13 +220,13 @@ void setup() {
           // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"AGS02MA\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "VEML7700") {
-          float humidity = readVEML7700();
+          float LUX = readVEML7700();
           // Adjust "sensor" key to "primary" to match your JavaScript expectations
-          sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(LUX) + "}";
       } else if (primarySensor == "MPL3115A2") {
-          float humidity = readMPL3115A2();
+          float temperature = readMPL3115A2();
           // Adjust "sensor" key to "primary" to match your JavaScript expectations
-          sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(temperature) + "}";
       }
       else {
           sensorData = "{\"error\": \"Unknown sensor\"}";

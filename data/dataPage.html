@@ -159,7 +159,7 @@
         });
 
         function findAndPollSensors() {
-            const { primary, secondary } = getQueryParams();
+            const { primary, secondary, channel } = getQueryParams();
             if (!primary || primary === 'None') {
                 console.log("No primary sensor selected or sensor is 'None'");
                 return;
@@ -174,13 +174,13 @@
 
             // Start new interval for polling
             intervalId = setInterval(() => {
-                fetchAndDisplaySensorData(primary, secondary); // Adjusted to pass sensors
+                fetchAndDisplaySensorData(primary, secondary, channel); // Adjusted to pass sensors
             }, 2000); // Poll every 2 seconds, adjust as needed
         }
 
         // Adjusted to take sensor parameters directly
-        function fetchAndDisplaySensorData(primary, secondary) {
-            const url = `/get-sensor-data?primary=${primary}&secondary=${secondary}`; // Example URL, adjust as needed
+        function fetchAndDisplaySensorData(primary, secondary, channel) {
+            const url = `/get-sensor-data?primary=${primary}&secondary=${secondary}&channel=${channel}`; // Example URL, adjust as needed
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
