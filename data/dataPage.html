@@ -178,17 +178,16 @@
             }, 2000); // Poll every 2 seconds, adjust as needed
         }
 
-        // Adjusted to take sensor parameters directly
+        // Get the sesnor data and display it
         function fetchAndDisplaySensorData(primary, secondary, channel) {
             const url = `/get-sensor-data?primary=${primary}&secondary=${secondary}&channel=${channel}`; // Example URL, adjust as needed
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
                     const dataContainer = document.getElementById('data-list');
-                    // Consider clearing previous data or managing how data is appended
                     dataContainer.innerHTML = ''; 
                     const dataElement = document.createElement('p');
-                    dataElement.textContent = `Primary: ${data.primary}, Value: ${data.value}`; // Example display, adjust as needed
+                    dataElement.textContent = `Primary: ${data.primary}, Value: ${data.value}`; 
                     dataContainer.appendChild(dataElement);
                 })
                 .catch(error => console.error("Error fetching sensor data:", error));

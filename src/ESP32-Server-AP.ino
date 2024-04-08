@@ -29,11 +29,34 @@ void tcaselect(uint8_t i) {
   Wire.endTransmission();  
 }
 
-float readMCP9808() {
-  tcaselect(2);
+void initVEML7700(uint8_t channel) {
+  tcaselect(channel);
+  veml.begin();
+}
+void initMCP9808(uint8_t channel) {
+  tcaselect(channel);
+  tempsensor.begin(0x18);
+  tempsensor.setResolution(3);
   tempsensor.wake();
+}
+
+void initAllSensors() {
+  for (int i = 0; i < 8; i++) { // Assuming 8 possible channels/sensors
+    if (Sensors[i] == "VEML7700") {
+      initVEML7700(i);
+    } 
+    else if (Sensors[i] == "MCP9808") {
+      initMCP9808(i);
+    } 
+    // Add other sensors here
+  }
+}
+
+float readMCP9808(uint8_t channel) {
+  tcaselect(channel);
+  // tempsensor.wake();
   float f = tempsensor.readTempF();
-  tempsensor.shutdown_wake(1);
+  // tempsensor.shutdown_wake(1);
   return f;
 }
 float readSeesaw() {
@@ -64,10 +87,9 @@ float readAGS02MA() {
   // Simulate reading 
   return 50.0 + (random(60) / 10.0);
 }
-float readVEML7700() {
-  tcaselect(1);
+float readVEML7700(uint8_t channel) {
+  tcaselect(channel);
   float lux = veml.readLux(VEML_LUX_AUTO);
-
   return lux;
 }
 float readMPL3115A2() {
@@ -77,15 +99,6 @@ float readMPL3115A2() {
 
 void setup() {
   Serial.begin(115200);
-
-  tcaselect(1);
-  veml.begin();
-
-  // tcaselect(2);
-  // // baro.begin();
-  // // baro.setSeaPressure(1013.26);
-  // tempsensor.begin(0x18);
-  // tempsensor.setResolution(3);
 
   // Initialize SPIFFS
   if (!SPIFFS.begin(true)) {
@@ -127,14 +140,14 @@ void setup() {
 // Handling the form submission for both primary and secondary sensors
   server.on("/configureSensors", HTTP_POST, [](AsyncWebServerRequest *request){
     // Process each expected primary and secondary sensor selection
-    for (int i = 1; i <= 8; i++) {
+    for (int i = 0; i < 8; i++) {
       String primaryParamName = "sensor-" + String(i);
       String secondaryParamName = "secondary" + String(i);
       
       // Primary sensor
       if (request->hasParam(primaryParamName, true)) {
         String primaryParamValue = request->getParam(primaryParamName, true)->value();
-        Sensors[i - 1] = primaryParamValue;
+        Sensors[i] = primaryParamValue;
         Serial.println(primaryParamName + ": " + primaryParamValue);
       } else {
         Serial.println(primaryParamName + " not found.");
@@ -143,12 +156,13 @@ void setup() {
       // Secondary sensor
       if (request->hasParam(secondaryParamName, true)) {
         String secondaryParamValue = request->getParam(secondaryParamName, true)->value();
-        SecondarySensors[i - 1] = secondaryParamValue;
+        SecondarySensors[i] = secondaryParamValue;
         Serial.println(secondaryParamName + ": " + secondaryParamValue);
       } else {
         Serial.println(secondaryParamName + " not found.");
       }
     }
+    initAllSensors();
     request->send(200, "text/plain", "Configurations Received");
   });
 
@@ -186,46 +200,38 @@ void setup() {
     String sensorData;
     if (request->hasParam("primary")) {
       String primarySensor = request->getParam("primary")->value();
-      // Example: Determine the sensor type and fetch its data
+      int channel = request->getParam("channel")->value().toInt(); 
+      delay(100); // Prevents preemptive reading; need this to prevent crashes
+      // Find sesnsor and read the value; return a JSON string 
       if (primarySensor == "MCP9808") {
-          float temp = readMCP9808();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          float temp = readMCP9808(channel);
           sensorData = "{\"primary\": \"MCP9808\", \"value\": " + String(temp) + "}";
       } else if (primarySensor == "Seesaw") {
           float humidity = readSeesaw();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"Seesaw\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "SGP30") {
           float humidity = readSGP30();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"SGP30\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "ADXL343") {
           float humidity = readADXL343();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"ADXL343\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "VL53L4CD") {
           float humidity = readVL53L4CD();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "BME280") {
           float humidity = readBME280();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"BME280\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "TSL2591") {
           float humidity = readTSL2591();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"TSL2591\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "AGS02MA") {
           float humidity = readAGS02MA();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"AGS02MA\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "VEML7700") {
-          float LUX = readVEML7700();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
+          float LUX = readVEML7700(channel);
           sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(LUX) + "}";
       } else if (primarySensor == "MPL3115A2") {
           float temperature = readMPL3115A2();
-          // Adjust "sensor" key to "primary" to match your JavaScript expectations
           sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(temperature) + "}";
       }
       else {
@@ -237,11 +243,11 @@ void setup() {
     request->send(200, "application/json", sensorData);
   });
 
-  // Start server
+  // Start the Async server
   server.begin();
 }
 
 void loop() {
-  // Using noise from an unconnected analog pin for randomness.
+  // Using the noise from an unconnected analog pin for randomness.
   randomSeed(analogRead(32));
 }
