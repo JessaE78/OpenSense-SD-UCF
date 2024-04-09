@@ -6,7 +6,7 @@
 #include "Adafruit_VEML7700.h"
 #include <Adafruit_MPL3115A2.h>
 #include "Adafruit_MCP9808.h"
-
+#include "Adafruit_SGP30.h"
 
 const char* ssid = "ESP32-Access-Point";
 const char* password = "password";
@@ -15,8 +15,9 @@ AsyncWebServer server(80);
 
 String Sensors[8], SecondarySensors[8];
 Adafruit_VEML7700 veml = Adafruit_VEML7700();
-Adafruit_MPL3115A2 baro;
 Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
+Adafruit_SGP30 sgp;
+Adafruit_MPL3115A2 baro;
 
 
 #define TCAADDR 0x70
@@ -39,14 +40,20 @@ void initMCP9808(uint8_t channel) {
   tempsensor.setResolution(3);
   tempsensor.wake();
 }
+void initSGP30(uint8_t channel) {
+  tcaselect(channel);
+  sgp.begin();
+  sgp.setIAQBaseline(0x8E68, 0x8F41); 
+}
 
 void initAllSensors() {
   for (int i = 0; i < 8; i++) { // Assuming 8 possible channels/sensors
     if (Sensors[i] == "VEML7700") {
       initVEML7700(i);
-    } 
-    else if (Sensors[i] == "MCP9808") {
+    } else if (Sensors[i] == "MCP9808") {
       initMCP9808(i);
+    } else if (Sensors[i] == "SGP30") {
+      initSGP30(i);
     } 
     // Add other sensors here
   }
@@ -59,32 +66,28 @@ float readMCP9808(uint8_t channel) {
   // tempsensor.shutdown_wake(1);
   return f;
 }
-float readSeesaw() {
-  // Simulate reading 
+float readSeesaw(uint8_t channel) {
   return 50.0 + (random(65) / 10.0);
 }
-float readSGP30() {
-  // Simulate reading 
-  return 50.0 + (random(90) / 10.0);
+float readSGP30(uint8_t channel) {
+  tcaselect(channel);
+  sgp.IAQmeasure();
+  float TVOC = sgp.TVOC;
+  return TVOC;
 }
-float readADXL343() {
-  // Simulate reading 
+float readADXL343(uint8_t channel) {
   return 50.0 + (random(15) / 10.0);
 }
-float readVL53L4CD() {
-  // Simulate reading 
+float readVL53L4CD(uint8_t channel) {
   return 50.0 + (random(80) / 10.0);
 }
-float readBME280() {
-  // Simulate reading 
+float readBME280(uint8_t channel) {
   return 50.0 + (random(40) / 10.0);
 }
-float readTSL2591() {
-  // Simulate reading 
+float readTSL2591(uint8_t channel) {
   return 50.0 + (random(30) / 10.0);
 }
-float readAGS02MA() {
-  // Simulate reading 
+float readAGS02MA(uint8_t channel) {
   return 50.0 + (random(60) / 10.0);
 }
 float readVEML7700(uint8_t channel) {
@@ -92,8 +95,9 @@ float readVEML7700(uint8_t channel) {
   float lux = veml.readLux(VEML_LUX_AUTO);
   return lux;
 }
-float readMPL3115A2() {
-  float temperature = baro.getTemperature();
+float readMPL3115A2(uint8_t channel) {
+  tcaselect(channel);
+    float temperature = baro.getTemperature();
   return temperature;
 }
 
@@ -207,31 +211,31 @@ void setup() {
           float temp = readMCP9808(channel);
           sensorData = "{\"primary\": \"MCP9808\", \"value\": " + String(temp) + "}";
       } else if (primarySensor == "Seesaw") {
-          float humidity = readSeesaw();
+          float humidity = readSeesaw(channel);
           sensorData = "{\"primary\": \"Seesaw\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "SGP30") {
-          float humidity = readSGP30();
-          sensorData = "{\"primary\": \"SGP30\", \"value\": " + String(humidity) + "}";
+          float TVOC = readSGP30(channel);
+          sensorData = "{\"primary\": \"SGP30\", \"value\": " + String(TVOC) + "}";
       } else if (primarySensor == "ADXL343") {
-          float humidity = readADXL343();
+          float humidity = readADXL343(channel);
           sensorData = "{\"primary\": \"ADXL343\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "VL53L4CD") {
-          float humidity = readVL53L4CD();
+          float humidity = readVL53L4CD(channel);
           sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "BME280") {
-          float humidity = readBME280();
+          float humidity = readBME280(channel);
           sensorData = "{\"primary\": \"BME280\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "TSL2591") {
-          float humidity = readTSL2591();
+          float humidity = readTSL2591(channel);
           sensorData = "{\"primary\": \"TSL2591\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "AGS02MA") {
-          float humidity = readAGS02MA();
+          float humidity = readAGS02MA(channel);
           sensorData = "{\"primary\": \"AGS02MA\", \"value\": " + String(humidity) + "}";
       } else if (primarySensor == "VEML7700") {
           float LUX = readVEML7700(channel);
           sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(LUX) + "}";
       } else if (primarySensor == "MPL3115A2") {
-          float temperature = readMPL3115A2();
+          float temperature = readMPL3115A2(channel);
           sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(temperature) + "}";
       }
       else {

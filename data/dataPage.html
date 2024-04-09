@@ -185,7 +185,7 @@
                 .then(response => response.json())
                 .then(data => {
                     const dataContainer = document.getElementById('data-list');
-                    dataContainer.innerHTML = ''; 
+                    //dataContainer.innerHTML = '';  To not append to last
                     const dataElement = document.createElement('p');
                     dataElement.textContent = `Primary: ${data.primary}, Value: ${data.value}`; 
                     dataContainer.appendChild(dataElement);
