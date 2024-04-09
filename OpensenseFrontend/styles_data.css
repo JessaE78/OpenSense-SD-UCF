@@ -126,3 +126,26 @@ body {
     text-align: center;
     padding-bottom: 10px;
 }
+
+.sensor-button[disabled], .config-button[disabled], .clear-button[disabled] {
+    background-color: #aaaaaa;
+    cursor: not-allowed;
+}
+
+#stopButton:enabled {
+    background-color: #d32f2f;
+}
+
+#stopButton:disabled {
+    background-color: #e06e6e;
+    cursor: not-allowed;
+}
+
+#startButton:enabled {
+    background-color: #4CAF50;
+}
+
+#startButton:disabled {
+    background-color: #a5d6a7;
+    cursor: not-allowed;
+}
