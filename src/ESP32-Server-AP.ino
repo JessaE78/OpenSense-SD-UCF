@@ -209,34 +209,34 @@ void setup() {
       // Find sesnsor and read the value; return a JSON string 
       if (primarySensor == "MCP9808") {
           float temp = readMCP9808(channel);
-          sensorData = "{\"primary\": \"MCP9808\", \"value\": " + String(temp) + "}";
+          sensorData = "{\"primary\": \"MCP9808\", \"value\": " + String(temp) + ", \"unit\": \"°F\"}";
       } else if (primarySensor == "Seesaw") {
           float humidity = readSeesaw(channel);
-          sensorData = "{\"primary\": \"Seesaw\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"Seesaw\", \"value\": " + String(humidity) + ", \"unit\": \"°F\"}";
       } else if (primarySensor == "SGP30") {
           float TVOC = readSGP30(channel);
-          sensorData = "{\"primary\": \"SGP30\", \"value\": " + String(TVOC) + "}";
+          sensorData = "{\"primary\": \"SGP30\", \"value\": " + String(TVOC) + ", \"unit\": \"TVOC\"}";
       } else if (primarySensor == "ADXL343") {
           float humidity = readADXL343(channel);
-          sensorData = "{\"primary\": \"ADXL343\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"ADXL343\", \"value\": " + String(humidity) + ", \"unit\": \"xyz\"}";
       } else if (primarySensor == "VL53L4CD") {
           float humidity = readVL53L4CD(channel);
-          sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + ", \"unit\": \"mm\"}";
       } else if (primarySensor == "BME280") {
           float humidity = readBME280(channel);
-          sensorData = "{\"primary\": \"BME280\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"BME280\", \"value\": " + String(humidity) + ", \"unit\": \"°F\"}";
       } else if (primarySensor == "TSL2591") {
           float humidity = readTSL2591(channel);
-          sensorData = "{\"primary\": \"TSL2591\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"TSL2591\", \"value\": " + String(humidity) + ", \"unit\": \"lux\"}";
       } else if (primarySensor == "AGS02MA") {
           float humidity = readAGS02MA(channel);
-          sensorData = "{\"primary\": \"AGS02MA\", \"value\": " + String(humidity) + "}";
+          sensorData = "{\"primary\": \"AGS02MA\", \"value\": " + String(humidity) + ", \"unit\": \"TVOC\"}";
       } else if (primarySensor == "VEML7700") {
           float LUX = readVEML7700(channel);
-          sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(LUX) + "}";
+          sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(LUX) + ", \"unit\": \"lux\"}";
       } else if (primarySensor == "MPL3115A2") {
           float temperature = readMPL3115A2(channel);
-          sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(temperature) + "}";
+          sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(temperature) + ", \"unit\": \"mmHg\"}";
       }
       else {
           sensorData = "{\"error\": \"Unknown sensor\"}";

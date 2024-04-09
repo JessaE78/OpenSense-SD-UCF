@@ -119,32 +119,6 @@
         //         }
         //     }, 1000);
         // }
-        // function startFetchingData() {
-
-        //     intervalId = setInterval(() => {
-        //         fetch('/get-sensor-data')
-        //             .then(response => response.json())
-        //             .then(data => {
-        //             // How the data should look using JSON: { "temperature": 24.5 }
-        //             displayData(data);
-        //             })
-        //         .catch(error => console.error("Error fetching data:", error));
-        //     }, 1000); // Sets the interval; controls the speed
-        // }
-        
-        // // Stops the data fetching
-        // function stopFetchingData() {
-        //     clearInterval(intervalId);
-        // }
-        
-        // // Displays the data inline and using a stackish type (FIFO)
-        // function displayData(data) {
-        //     const dataContainer = document.getElementById('data-list');
-        //     const newDataElement = document.createElement('p');
-        //     newDataElement.textContent = `Temperature: ${data.temperature} °C`;
-        //     dataContainer.appendChild(newDataElement);
-        // }
-
         var intervalId; // Used to store the interval for polling sensor data
 
         document.getElementById('startButton').addEventListener('click', function() {
@@ -187,7 +161,7 @@
                     const dataContainer = document.getElementById('data-list');
                     //dataContainer.innerHTML = '';  To not append to last
                     const dataElement = document.createElement('p');
-                    dataElement.textContent = `Primary: ${data.primary}, Value: ${data.value}`; 
+                    dataElement.textContent = `Primary: ${data.primary}, Value: ${data.value}, Units: ${data.unit}`; 
                     dataContainer.appendChild(dataElement);
                 })
                 .catch(error => console.error("Error fetching sensor data:", error));
