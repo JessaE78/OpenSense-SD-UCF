@@ -206,6 +206,7 @@ void setup() {
       String primarySensor = request->getParam("primary")->value();
       int channel = request->getParam("channel")->value().toInt(); 
       delay(100); // Prevents preemptive reading; need this to prevent crashes
+      
       // Find sesnsor and read the value; return a JSON string 
       if (primarySensor == "MCP9808") {
           float temp = readMCP9808(channel);
