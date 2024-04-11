@@ -3,8 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="styles_data.css">  
-
+    <link rel="stylesheet" href="styles_data.css">
     <title>OpenSense Data Page</title>
 </head>
 <body>
@@ -21,6 +20,10 @@
 
             <div class="data-graph" id="graph-container">
                 <!-- Graph will go here -->
+                <div class="chartBox" style="display: none; margin-left: -0.5em; margin-right: 0.6em;
+                 top: 50%; transform: translateY(35%);">
+                    <canvas id="myChart"></canvas>
+                </div>
             </div>
         </div>
 
@@ -34,7 +37,7 @@
             <div class="sensor-buttons">
                 <button class="sensor-button" id="startButton" >Start</button>
                 <button class="sensor-button" id="stopButton" >Stop</button>
-                <button class="sensor-button" id="graphButton" onclick="insertGraphImage()">Graph</button>
+                <button class="sensor-button" id="graphButton" onclick="toggleGraphVisibility()" disabled>Graph</button>
                 <button class="sensor-button" id="exportButton" onclick="downloadFile()">Export Data</button>
             </div>
             <div class="config-clear-buttons">
@@ -43,16 +46,46 @@
             </div>
         </div>
     </div>
-
+    <script src="./chart.umd.js"></script>
     <script>
         var intervalId;
         var dataArray = [];
         var lastLine = '';
 
-        function insertGraphImage() {
-            var graphContainer = document.getElementById('graph-container');
-            graphContainer.innerHTML = '<img src="graph.png">';
+        let csvData = "0";
+        // Parse CSV data into an array
+        const dataPoints = csvData.split(',').map(Number);
+
+        // Prepare labels for the X-axis (0 to 20 seconds)
+        const labels = [];
+        for(let i = 0; i <= 4; i += 2) {
+            labels.push(`${i}s`);
         }
+
+        // Setup chart data
+        const data = {
+            labels: labels,
+            datasets: [{
+                label: 'Sensor Data',
+                data: dataPoints,
+                fill: false,
+                borderColor: 'rgb(75, 192, 192)',
+                tension: 0.1
+            }]
+        };
+
+        // Config for the line chart
+        const config = {
+            type: 'line',
+            data,
+            options: {}
+        };
+
+        // Initialize the chart
+        const myChart = new Chart(
+            document.getElementById('myChart'),
+            config
+        );
     
         // Method to clear the content
         function clearContent() {
@@ -85,8 +118,6 @@
                 return;
             }
 
-            // Logic for secondary sensor similar to primary needs implementing
-
             // Clear existing interval if it exists
             if (intervalId) {
                 clearInterval(intervalId);
@@ -109,8 +140,24 @@
                     const dataElement = document.createElement('p');
                     dataElement.textContent = `${data.primary}, ${data.value}, ${data.unit}`; 
                     dataContainer.appendChild(dataElement);
+
+                    csvData += `,${data.value}`;
+                    updateChartData(myChart, data.value);
                 })
                 .catch(error => console.error("Error fetching sensor data:", error));
+        }
+
+        function updateChartData(chart, newValue) {
+            const newLabel = `${chart.data.labels.length * 2}s`; // Assuming you increment by 2 seconds as in your labels setup
+            chart.data.labels.push(newLabel);
+            chart.data.datasets.forEach((dataset) => {
+                dataset.data.push(newValue);
+            });
+            chart.update();
+        }
+        function toggleGraphVisibility() {
+            const chartBox = document.querySelector('.chartBox');
+            chartBox.style.display = chartBox.style.display === 'none' ? 'block' : 'none';
         }
 
         function getQueryParams() {
@@ -124,10 +171,14 @@
 
         document.getElementById('stopButton').addEventListener('click', function() {
                 enableStartDisableStop();
+                // Disable the graph button when polling starts
+                document.getElementById('graphButton').disabled = false;
         });
 
         document.getElementById('startButton').addEventListener('click', function() {
                 disableStartEnableStop();
+                // Enable the graph button once polling stops
+                document.getElementById('graphButton').disabled = true;
         });
 
         function disableStartEnableStop() {
@@ -156,7 +207,6 @@
             link.click();
             URL.revokeObjectURL(link.href);
         }
-
 
         enableStartDisableStop();
     </script>    

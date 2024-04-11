@@ -41,6 +41,15 @@ body {
     margin-left: auto;
 }
 
+.chartBox {
+    width: auto;
+    height: auto;
+    padding: 10px;
+    border-radius: 10px;
+    border: solid 3px rgba(54, 162, 235, 1);
+    background: white;
+}
+
 .data-graph img {
     width: 100%;
     height: 100%;

@@ -269,6 +269,11 @@ void setup() {
     request->send(SPIFFS, "/background.png", "image/png");
   });
 
+  // Route to load chart.umd.js
+  server.on("/chart.umd.js", HTTP_GET, [](AsyncWebServerRequest *request){
+    request->send(SPIFFS, "/chart.umd.js", "application/javascript");
+  });
+
 // Sensor data endpoint
   server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request) {
     String sensorData;
