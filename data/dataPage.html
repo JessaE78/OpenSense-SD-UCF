@@ -36,11 +36,11 @@
                 <button class="sensor-button" id="startButton" >Start</button>
                 <button class="sensor-button" id="stopButton" >Stop</button>
                 <button class="sensor-button" id="graphButton" onclick="insertGraphImage()">Graph</button>
+                <button class="sensor-button" id="exportButton" onclick="downloadFile()">Export Data</button>
             </div>
             <div class="config-clear-buttons">
                 <button class="clear-button" onclick="clearContent()">Clear</button>
                 <button class="config-button" onclick="window.location.href = '/ ';">Return</button>
-                <!-- <button class="config-button" onclick="window.location.href = 'index.html';">Return</button> -->
             </div>
         </div>
     </div>
@@ -136,6 +136,23 @@
         function enableStartDisableStop() {
             document.getElementById('startButton').disabled = false;
             document.getElementById('stopButton').disabled = true;
+        }
+
+        function downloadFile(){
+            const paragraphs = document.querySelectorAll("#data-list p");
+            let csvContent = "Primary,Value,Units\n"; // Header line *NOTE: CHANGE THIS IF ADDING TIMESTAMPS*
+
+            paragraphs.forEach(paragraph => {
+                const data = paragraph.textContent.split(', '); // data is separated by ", "
+                csvContent += `${data[0]},${data[1]},${data[2]}\n`; 
+            });
+
+            const file = new Blob([csvContent], { type: 'text/csv' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(file);
+            link.download = "sensor-data.csv";
+            link.click();
+            URL.revokeObjectURL(link.href);
         }
 
         enableStartDisableStop();
