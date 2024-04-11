@@ -35,7 +35,7 @@
             <div class="sensor-buttons">
                 <button class="sensor-button" id="startButton" >Start</button>
                 <button class="sensor-button" id="stopButton" >Stop</button>
-                <button class="sensor-button" id="sensor3" onclick="insertGraphImage()">Graph</button>
+                <button class="sensor-button" id="graphButton" onclick="insertGraphImage()">Graph</button>
             </div>
             <div class="config-clear-buttons">
                 <button class="clear-button" onclick="clearContent()">Clear</button>
@@ -65,60 +65,7 @@
             dataArray = [];
             lastLine = '';
         }
-        
-        // Method to fetch data from file and inject it into the container
-        // function injectDataFromFile(sensorId) {
-        //     clearInterval(intervalId);
-
-        //     var dataContainer = document.getElementById('data-list');
-        //     dataContainer.innerHTML = '';
-
-        //     fetch('data.txt')
-        //         .then(response => response.text())
-        //         .then(data => {
-        //             const lines = data.split('\n');
-
-        //             if (lines[lines.length - 1] !== lastLine) {
-        //                 dataArray = lines.reverse();
-        //                 lastLine = lines[lines.length - 1];
-        //                 injectData(sensorId);
-        //             }
-        //         })
-        //         .catch(error => console.error('Error fetching data:', error));
-        // }
-            
-        // Method to inject data into the container
-        // function injectData(sensorId) {
-        //     intervalId = setInterval(function() {
-        //         var dataContainer = document.getElementById('data-list');
-    
-        //         if (dataArray.length > 0) {
-        //             // insert backwards for top down insertion
-        //             var line = dataArray.pop();
-        //             var parts = line.split(', ');
-        //             var newData = document.createElement('p');
-    
-        //             switch(sensorId) {
-        //             case 'sensor1':
-        //                 newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[1] + " °C";
-        //                 break;
-        //             case 'sensor2':
-        //                 newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[2] + " PPB";
-        //                 break;
-        //             case 'sensor3':
-        //                 newData.innerHTML = "<span class='data-spacing'>" + parts[0] + "</span>" + parts[3] + " lux";
-        //                 break;
-        //             default:
-        //                 newData.textContent = "error";
-        //             }
-    
-        //             dataContainer.insertBefore(newData, dataContainer.firstChild);
-        //         } else {
-        //             clearInterval(intervalId);
-        //             dataArray = [];
-        //         }
-        //     }, 1000);
-        // }
+ 
         var intervalId; // Used to store the interval for polling sensor data
 
         document.getElementById('startButton').addEventListener('click', function() {
@@ -173,6 +120,25 @@
                 secondary: params.get('secondary')
             };
         }
+        document.getElementById('stopButton').addEventListener('click', function() {
+                enableStartDisableStop();
+        });
+
+        document.getElementById('startButton').addEventListener('click', function() {
+                disableStartEnableStop();
+        });
+
+        function disableStartEnableStop() {
+            document.getElementById('startButton').disabled = true;
+            document.getElementById('stopButton').disabled = false;
+        }
+
+        function enableStartDisableStop() {
+            document.getElementById('startButton').disabled = false;
+            document.getElementById('stopButton').disabled = true;
+        }
+
+        enableStartDisableStop();
     </script>    
 </body>
 </html>
