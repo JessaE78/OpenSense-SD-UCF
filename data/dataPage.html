@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -65,7 +64,7 @@
             dataArray = [];
             lastLine = '';
         }
- 
+        
         var intervalId; // Used to store the interval for polling sensor data
 
         document.getElementById('startButton').addEventListener('click', function() {
@@ -85,6 +84,8 @@
                 console.log("No primary sensor selected or sensor is 'None'");
                 return;
             }
+
+            // Logic for secondary sensor similar to primary needs implementing
 
             // Clear existing interval if it exists
             if (intervalId) {
@@ -120,6 +121,7 @@
                 secondary: params.get('secondary')
             };
         }
+
         document.getElementById('stopButton').addEventListener('click', function() {
                 enableStartDisableStop();
         });
@@ -154,6 +156,7 @@
             link.click();
             URL.revokeObjectURL(link.href);
         }
+
 
         enableStartDisableStop();
     </script>    
