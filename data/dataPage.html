@@ -1,20 +1,22 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="styles_data.css">
     <title>OpenSense Data Page</title>
 </head>
+
 <body>
     <div class="main-container">
         <div class="header">
             <h1>Open Sense Data Displaying</h1>
         </div>
-        
+
         <!-- Top half container -->
         <div class="data-container">
-            <div class="data-list" id="data-list"> 
+            <div class="data-list" id="data-list">
                 <!-- Data will be injected here -->
             </div>
 
@@ -35,8 +37,8 @@
         <!-- Bottom half container -->
         <div class="button-container">
             <div class="sensor-buttons">
-                <button class="sensor-button" id="startButton" >Start</button>
-                <button class="sensor-button" id="stopButton" >Stop</button>
+                <button class="sensor-button" id="startButton">Start</button>
+                <button class="sensor-button" id="stopButton">Stop</button>
                 <button class="sensor-button" id="graphButton" onclick="toggleGraphVisibility()" disabled>Graph</button>
                 <button class="sensor-button" id="exportButton" onclick="downloadFile()">Export Data</button>
             </div>
@@ -46,6 +48,7 @@
             </div>
         </div>
     </div>
+    <!-- Chart.JS API source -->
     <script src="./chart.umd.js"></script>
     <script>
         var intervalId;
@@ -58,7 +61,7 @@
 
         // Prepare labels for the X-axis (0 to 20 seconds)
         const labels = [];
-        for(let i = 0; i <= 4; i += 2) {
+        for (let i = 0; i <= 4; i += 2) {
             labels.push(`${i}s`);
         }
 
@@ -86,7 +89,7 @@
             document.getElementById('myChart'),
             config
         );
-    
+
         // Method to clear the content
         function clearContent() {
             clearInterval(intervalId);
@@ -97,14 +100,14 @@
             dataArray = [];
             lastLine = '';
         }
-        
+
         var intervalId; // Used to store the interval for polling sensor data
 
-        document.getElementById('startButton').addEventListener('click', function() {
+        document.getElementById('startButton').addEventListener('click', function () {
             findAndPollSensors(); // Start polling when clicked
         });
 
-        document.getElementById('stopButton').addEventListener('click', function() {
+        document.getElementById('stopButton').addEventListener('click', function () {
             if (intervalId) {
                 clearInterval(intervalId); // Stop polling
                 intervalId = null;
@@ -138,7 +141,7 @@
                     const dataContainer = document.getElementById('data-list');
                     //dataContainer.innerHTML = '';  To not append to last
                     const dataElement = document.createElement('p');
-                    dataElement.textContent = `${data.primary}, ${data.value}, ${data.unit}`; 
+                    dataElement.textContent = `${data.primary}, ${data.value}, ${data.unit}`;
                     dataContainer.appendChild(dataElement);
 
                     csvData += `,${data.value}`;
@@ -169,16 +172,16 @@
             };
         }
 
-        document.getElementById('stopButton').addEventListener('click', function() {
-                enableStartDisableStop();
-                // Disable the graph button when polling starts
-                document.getElementById('graphButton').disabled = false;
+        document.getElementById('stopButton').addEventListener('click', function () {
+            enableStartDisableStop();
+            // Disable the graph button when polling starts
+            document.getElementById('graphButton').disabled = false;
         });
 
-        document.getElementById('startButton').addEventListener('click', function() {
-                disableStartEnableStop();
-                // Enable the graph button once polling stops
-                document.getElementById('graphButton').disabled = true;
+        document.getElementById('startButton').addEventListener('click', function () {
+            disableStartEnableStop();
+            // Enable the graph button once polling stops
+            document.getElementById('graphButton').disabled = true;
         });
 
         function disableStartEnableStop() {
@@ -191,13 +194,13 @@
             document.getElementById('stopButton').disabled = true;
         }
 
-        function downloadFile(){
+        function downloadFile() {
             const paragraphs = document.querySelectorAll("#data-list p");
             let csvContent = "Primary,Value,Units\n"; // Header line *NOTE: CHANGE THIS IF ADDING TIMESTAMPS*
 
             paragraphs.forEach(paragraph => {
                 const data = paragraph.textContent.split(', '); // data is separated by ", "
-                csvContent += `${data[0]},${data[1]},${data[2]}\n`; 
+                csvContent += `${data[0]},${data[1]},${data[2]}\n`;
             });
 
             const file = new Blob([csvContent], { type: 'text/csv' });
@@ -209,6 +212,7 @@
         }
 
         enableStartDisableStop();
-    </script>    
+    </script>
 </body>
+
 </html>

@@ -14,8 +14,8 @@
 #define TCAADDR 0x70
 
 // WiFi Access Point Information
-const char* ssid = "ESP32-Access-Point";
-const char* password = "password";
+const char *ssid = "ESP32-Access-Point";
+const char *password = "password";
 
 // Intialize asyncronous server
 AsyncWebServer server(80);
@@ -33,149 +33,195 @@ AGS02MA AGS(26);
 Adafruit_BME280 bme;
 
 // Mux channel selector
-void tcaselect(uint8_t i) {
-  if (i > 7) return;
- 
+void tcaselect(uint8_t i)
+{
+  if (i > 7)
+    return;
+
   Wire.beginTransmission(TCAADDR);
   Wire.write(1 << i);
-  Wire.endTransmission();  
+  Wire.endTransmission();
 }
 
 // Initialization functions
-void initVEML7700(uint8_t channel) {
+void initVEML7700(uint8_t channel)
+{
   tcaselect(channel);
   veml.begin();
 }
-void initMCP9808(uint8_t channel) {
+void initMCP9808(uint8_t channel)
+{
   tcaselect(channel);
   tempsensor.begin(0x18);
   tempsensor.setResolution(3);
   tempsensor.wake();
 }
-void initSGP30(uint8_t channel) {
+void initSGP30(uint8_t channel)
+{
   tcaselect(channel);
   sgp.begin();
-  sgp.setIAQBaseline(0x8E68, 0x8F41); 
+  sgp.setIAQBaseline(0x8E68, 0x8F41);
 }
-void initSeesaw(uint8_t channel) {
+void initSeesaw(uint8_t channel)
+{
   tcaselect(channel);
   ss.begin(0x36);
 }
-void initAGS02MA(uint8_t channel) {
+void initAGS02MA(uint8_t channel)
+{
   tcaselect(channel);
   Wire.begin();
   bool b = AGS.begin();
   b = AGS.setPPBMode();
 }
-void initBME280(uint8_t channel) {
+void initBME280(uint8_t channel)
+{
   tcaselect(channel);
-  bme.begin(); 
+  bme.begin();
 }
 
 // Initialize the sensors based on user configuration
-void initAllSensors() {
-  for (int i = 0; i < 8; i++) { 
-    if (Sensors[i] == "VEML7700") {
+void initAllSensors()
+{
+  for (int i = 0; i < 8; i++)
+  {
+    if (Sensors[i] == "VEML7700")
+    {
       initVEML7700(i);
-    } else if (Sensors[i] == "MCP9808") {
+    }
+    else if (Sensors[i] == "MCP9808")
+    {
       initMCP9808(i);
-    } else if (Sensors[i] == "SGP30") {
+    }
+    else if (Sensors[i] == "SGP30")
+    {
       initSGP30(i);
-    } else if (Sensors[i] == "Seesaw") {
+    }
+    else if (Sensors[i] == "Seesaw")
+    {
       initSeesaw(i);
-    } else if (Sensors[i] == "AGS02MA") {
+    }
+    else if (Sensors[i] == "AGS02MA")
+    {
       initAGS02MA(i);
-    } else if (Sensors[i] == "BME280") {
+    }
+    else if (Sensors[i] == "BME280")
+    {
       initBME280(i);
-    }  
+    }
     // Add other sensors here
   }
 }
 
 // Provide the readings of the specified sensor/sensor mode
-String readSeesaw(uint8_t channel, String sensorMode) {
+String readSeesaw(uint8_t channel, String sensorMode)
+{
   tcaselect(channel);
   float data = -1;
   String valueJSON;
-  if (sensorMode == "Capacitive") {
+  if (sensorMode == "Capacitive")
+  {
     uint16_t capread = ss.touchRead(0);
     valueJSON = "{\"primary\": \"Seesaw\", \"value\": " + String(capread) + ", \"unit\": \"Cap.\"}";
-  } else {
+  }
+  else
+  {
     data = ss.getTemp();
     valueJSON = "{\"primary\": \"Seesaw\", \"value\": " + String(data) + ", \"unit\": \"°F\"}";
   }
   return valueJSON;
 }
-String readSGP30(uint8_t channel, String sensorMode) {
+String readSGP30(uint8_t channel, String sensorMode)
+{
   tcaselect(channel);
   sgp.IAQmeasure();
   float data = -1;
   String valueJSON;
-  if (sensorMode == "eCO2") {
+  if (sensorMode == "eCO2")
+  {
     data = sgp.eCO2;
     valueJSON = "{\"primary\": \"SGP30\", \"value\": " + String(data) + ", \"unit\": \"ppm\"}";
-  } else {
+  }
+  else
+  {
     data = sgp.TVOC;
     valueJSON = "{\"primary\": \"SGP30\", \"value\": " + String(data) + ", \"unit\": \"ppb\"}";
   }
   return valueJSON;
 }
-String readBME280(uint8_t channel, String sensorMode) {
+String readBME280(uint8_t channel, String sensorMode)
+{
   tcaselect(channel);
   float data = -1;
   String valueJSON;
-  if (sensorMode == "Pressure") {
+  if (sensorMode == "Pressure")
+  {
     data = bme.readPressure() / 100.0F;
     valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"hPa\"}";
-  } else if (sensorMode == "Altitude") {
+  }
+  else if (sensorMode == "Altitude")
+  {
     data = bme.readAltitude(SEALEVELPRESSURE_HPA);
     valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"m\"}";
-  } else if (sensorMode == "Humidity") {
+  }
+  else if (sensorMode == "Humidity")
+  {
     data = bme.readHumidity();
     valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"%\"}";
-  } else {
+  }
+  else
+  {
     data = bme.readTemperature();
     valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"°C\"}";
   }
   return valueJSON;
 }
-float readMCP9808(uint8_t channel) {
+float readMCP9808(uint8_t channel)
+{
   tcaselect(channel);
   // tempsensor.wake();
   float temp = tempsensor.readTempF();
   // tempsensor.shutdown_wake(1);
   return temp;
 }
-float readMPL3115A2(uint8_t channel) {
+float readMPL3115A2(uint8_t channel)
+{
   tcaselect(channel);
-    float temperature = baro.getTemperature();
+  float temperature = baro.getTemperature();
   return temperature;
 }
-float readVEML7700(uint8_t channel) {
+float readVEML7700(uint8_t channel)
+{
   tcaselect(channel);
   float lux = veml.readLux(VEML_LUX_AUTO);
   return lux;
 }
-float readAGS02MA(uint8_t channel) {
+float readAGS02MA(uint8_t channel)
+{
   uint32_t value = AGS.readPPB();
   return value;
 }
-float readTSL2591(uint8_t channel) {
+float readTSL2591(uint8_t channel)
+{
   return 50.0 + (random(30) / 10.0);
 }
-float readADXL343(uint8_t channel) {
+float readADXL343(uint8_t channel)
+{
   return 50.0 + (random(15) / 10.0);
 }
-float readVL53L4CD(uint8_t channel) {
+float readVL53L4CD(uint8_t channel)
+{
   return 50.0 + (random(80) / 10.0);
 }
 
 // Setup routes and filesystem
-void setup() {
+void setup()
+{
   Serial.begin(115200);
 
   // Initialize SPIFFS
-  if (!SPIFFS.begin(true)) {
+  if (!SPIFFS.begin(true))
+  {
     Serial.println("An Error has occurred while mounting SPIFFS");
     return;
   }
@@ -183,21 +229,27 @@ void setup() {
   // List files in SPIFFS (for verification, can be removed later)
   Serial.println("Listing files:");
   File root = SPIFFS.open("/", FILE_READ);
-  if (!root) {
+  if (!root)
+  {
     Serial.println("Failed to open directory");
     return;
   }
-  if (!root.isDirectory()) {
+  if (!root.isDirectory())
+  {
     Serial.println("Not a directory");
     return;
   }
 
   File file = root.openNextFile();
-  while (file) {
-    if (file.isDirectory()) {
+  while (file)
+  {
+    if (file.isDirectory())
+    {
       Serial.print("  DIR : ");
       Serial.println(file.name());
-    } else {
+    }
+    else
+    {
       Serial.print("  FILE: ");
       Serial.print(file.name());
       Serial.print("\tSIZE: ");
@@ -211,8 +263,9 @@ void setup() {
   Serial.print("AP IP address: ");
   Serial.println(WiFi.softAPIP());
 
-// Handling the form submission for both primary and secondary sensors
-  server.on("/configureSensors", HTTP_POST, [](AsyncWebServerRequest *request){
+  // Handling the form submission for both primary and secondary sensors
+  server.on("/configureSensors", HTTP_POST, [](AsyncWebServerRequest *request)
+            {
     // Process each expected primary and secondary sensor selection
     for (int i = 0; i < 8; i++) {
       String primaryParamName = "sensor-" + String(i);
@@ -237,45 +290,37 @@ void setup() {
       }
     }
     initAllSensors();
-    request->send(200, "text/plain", "Configurations Received");
-  });
+    request->send(200, "text/plain", "Configurations Received"); });
 
   // Define server routes to serve files
-  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/index.html", "text/html");
-  });
+  server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/index.html", "text/html"); });
 
-  server.on("/dataPage.html", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/dataPage.html", "text/html");
-  });
+  server.on("/dataPage.html", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/dataPage.html", "text/html"); });
 
-  server.on("/styles_config.css", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/styles_config.css", "text/css");
-  });
+  server.on("/styles_config.css", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/styles_config.css", "text/css"); });
 
-  server.on("/styles_data.css", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/styles_data.css", "text/css");
-  });
+  server.on("/styles_data.css", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/styles_data.css", "text/css"); });
 
-  server.on("/data.txt", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/data.txt", "text/plain");
-  });
+  server.on("/data.txt", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/data.txt", "text/plain"); });
 
-  server.on("/graph.png", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/graph.png", "image/png");
-  });
+  server.on("/graph.png", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/graph.png", "image/png"); });
 
-  server.on("/background.png", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/background.png", "image/png");
-  });
+  server.on("/background.png", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/background.png", "image/png"); });
 
   // Route to load chart.umd.js
-  server.on("/chart.umd.js", HTTP_GET, [](AsyncWebServerRequest *request){
-    request->send(SPIFFS, "/chart.umd.js", "application/javascript");
-  });
+  server.on("/chart.umd.js", HTTP_GET, [](AsyncWebServerRequest *request)
+            { request->send(SPIFFS, "/chart.umd.js", "application/javascript"); });
 
-// Sensor data endpoint
-  server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request) {
+  // Sensor data endpoint
+  server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request)
+            {
     String sensorData;
     if (request->hasParam("primary")) {
       String primarySensor = request->getParam("primary")->value();
@@ -318,14 +363,14 @@ void setup() {
     } else {
       sensorData = "{\"error\": \"No sensor specified\"}";
     }
-    request->send(200, "application/json", sensorData);
-  });
+    request->send(200, "application/json", sensorData); });
 
   // Start the Async server
   server.begin();
 }
 
-void loop() {
+void loop()
+{
   // Using the noise from an unconnected analog pin for randomness.
   randomSeed(analogRead(32));
 }
