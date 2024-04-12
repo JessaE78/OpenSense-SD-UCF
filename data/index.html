@@ -342,6 +342,8 @@
                 .then(({ text, ok }) => {
                     if (!ok) {
                         alert('Error during sensor initialization: ' + text);
+                        sessionStorage.clear(); 
+                        window.location.reload();
                     } else {
                         alert('Success: ' + text);
                     }
@@ -349,6 +351,8 @@
                 .catch(error => {
                     console.error('Failed to connect to the server:', error);
                     alert('Failed to connect to the server: ' + error);
+                    sessionStorage.clear(); 
+                    window.location.reload();
                 });
         }
 
