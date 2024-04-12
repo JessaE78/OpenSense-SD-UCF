@@ -44,73 +44,67 @@ void tcaselect(uint8_t i)
 }
 
 // Initialization functions
-void initVEML7700(uint8_t channel)
+String initVEML7700(uint8_t channel)
 {
   tcaselect(channel);
-  veml.begin();
+  if (!veml.begin())
+  {
+    return "Failed to initialize VEML7700 on channel " + String(channel);
+  }
+  return ""; // Empty string indicates success
 }
-void initMCP9808(uint8_t channel)
+String initMCP9808(uint8_t channel)
 {
   tcaselect(channel);
-  tempsensor.begin(0x18);
-  tempsensor.setResolution(3);
-  tempsensor.wake();
-}
-void initSGP30(uint8_t channel)
-{
-  tcaselect(channel);
-  sgp.begin();
-  sgp.setIAQBaseline(0x8E68, 0x8F41);
-}
-void initSeesaw(uint8_t channel)
-{
-  tcaselect(channel);
-  ss.begin(0x36);
-}
-void initAGS02MA(uint8_t channel)
-{
-  tcaselect(channel);
-  Wire.begin();
-  bool b = AGS.begin();
-  b = AGS.setPPBMode();
-}
-void initBME280(uint8_t channel)
-{
-  tcaselect(channel);
-  bme.begin();
+  if (!tempsensor.begin(0x18))
+  {
+    return "Failed to initialize MCP9808 on channel " + String(channel);
+  }
+  tempsensor.setResolution(3); // Set resolution as needed
+  tempsensor.wake();           // Wake up the sensor
+  return "";
 }
 
-// Initialize the sensors based on user configuration
-void initAllSensors()
+String initSGP30(uint8_t channel)
 {
-  for (int i = 0; i < 8; i++)
+  tcaselect(channel);
+  if (!sgp.begin())
   {
-    if (Sensors[i] == "VEML7700")
-    {
-      initVEML7700(i);
-    }
-    else if (Sensors[i] == "MCP9808")
-    {
-      initMCP9808(i);
-    }
-    else if (Sensors[i] == "SGP30")
-    {
-      initSGP30(i);
-    }
-    else if (Sensors[i] == "Seesaw")
-    {
-      initSeesaw(i);
-    }
-    else if (Sensors[i] == "AGS02MA")
-    {
-      initAGS02MA(i);
-    }
-    else if (Sensors[i] == "BME280")
-    {
-      initBME280(i);
-    }
-    // Add other sensors here
+    return "Failed to initialize SGP30 on channel " + String(channel);
   }
+  sgp.setIAQBaseline(0x8E68, 0x8F41); // Set baseline as needed
+  return "";
+}
+
+String initSeesaw(uint8_t channel)
+{
+  tcaselect(channel);
+  if (!ss.begin(0x36))
+  { // Assume address 0x36 for seesaw device
+    return "Failed to initialize Seesaw on channel " + String(channel);
+  }
+  return "";
+}
+
+String initAGS02MA(uint8_t channel)
+{
+  tcaselect(channel);
+  if (!AGS.begin())
+  {
+    return "Failed to initialize AGS02MA on channel " + String(channel);
+  }
+  AGS.setPPBMode(); // Assuming the setPPBMode does not need a return value check
+  return "";
+}
+
+String initBME280(uint8_t channel)
+{
+  tcaselect(channel);
+  if (!bme.begin())
+  {
+    return "Failed to initialize BME280 on channel " + String(channel);
+  }
+  return "";
 }
 
 // Provide the readings of the specified sensor/sensor mode
@@ -266,31 +260,51 @@ void setup()
   // Handling the form submission for both primary and secondary sensors
   server.on("/configureSensors", HTTP_POST, [](AsyncWebServerRequest *request)
             {
-    // Process each expected primary and secondary sensor selection
+    String errorMessage;
     for (int i = 0; i < 8; i++) {
       String primaryParamName = "sensor-" + String(i);
-      String secondaryParamName = "secondary" + String(i);
-      
-      // Primary sensor
+      String result;
+
+      // Check if the primary sensor parameter is provided
       if (request->hasParam(primaryParamName, true)) {
         String primaryParamValue = request->getParam(primaryParamName, true)->value();
         Sensors[i] = primaryParamValue;
-        Serial.println(primaryParamName + ": " + primaryParamValue);
+
+        // Attempt to initialize the sensor and collect any error messages
+        if (Sensors[i] == "VEML7700") {
+          result = initVEML7700(i);
+        }
+        // Extend initialization to other sensors based on your setup
+        else if (Sensors[i] == "MCP9808") {
+          result = initMCP9808(i);
+        }
+        else if (Sensors[i] == "SGP30") {
+          result = initSGP30(i);
+        }
+        else if (Sensors[i] == "Seesaw") {
+          result = initSeesaw(i);
+        }
+        else if (Sensors[i] == "AGS02MA") {
+          result = initAGS02MA(i);
+        }
+        else if (Sensors[i] == "BME280") {
+          result = initBME280(i);
+        }
+        // Add more sensors as necessary...
+
+        if (!result.isEmpty()) {
+          errorMessage += result + "\n"; // Accumulate error messages
+        }
       } else {
-        Serial.println(primaryParamName + " not found.");
-      }
-      
-      // Secondary sensor
-      if (request->hasParam(secondaryParamName, true)) {
-        String secondaryParamValue = request->getParam(secondaryParamName, true)->value();
-        SecondarySensors[i] = secondaryParamValue;
-        Serial.println(secondaryParamName + ": " + secondaryParamValue);
-      } else {
-        Serial.println(secondaryParamName + " not found.");
+        errorMessage += primaryParamName + " parameter not found.\n";
       }
     }
-    initAllSensors();
-    request->send(200, "text/plain", "Configurations Received"); });
+
+    if (!errorMessage.isEmpty()) {
+      request->send(500, "text/plain", errorMessage); // Send error message if there are any
+    } else {
+      request->send(200, "text/plain", "All sensors initialized successfully");
+    } });
 
   // Define server routes to serve files
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)

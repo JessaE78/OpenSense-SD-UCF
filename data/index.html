@@ -331,6 +331,27 @@
         </form>
     </div>
     <script>
+        // Updated post request to allow for error handling
+        function sendSensorConfig() {
+            const formData = new FormData(document.querySelector('form'));
+            fetch('/configureSensors', {
+                method: 'POST',
+                body: formData
+            })
+                .then(response => response.text().then(text => ({ text, ok: response.ok })))
+                .then(({ text, ok }) => {
+                    if (!ok) {
+                        alert('Error during sensor initialization: ' + text);
+                    } else {
+                        alert('Success: ' + text);
+                    }
+                })
+                .catch(error => {
+                    console.error('Failed to connect to the server:', error);
+                    alert('Failed to connect to the server: ' + error);
+                });
+        }
+
         const secondaryOptions = {
             "SGP30": ["TVOC", "eCO2"],
             "BME280": ["Temperature", "Pressure", "Altitude", "Humidity"],
@@ -411,8 +432,27 @@
                 }
             });
         });
-        // Upon loading of the page
+
+        /* Upon page-load, get and set the info from form submission
+         * When the form is submitted, save the data in session storage and to ESP string arrays */
         document.addEventListener('DOMContentLoaded', function () {
+
+            const form = document.querySelector('form');
+            form.addEventListener('submit', function (event) {
+                event.preventDefault(); // Prevent the default form submission behavior
+
+                const formData = new FormData(this);
+                let configData = {};
+                for (let i = 0; i < 8; i++) {
+                    configData[`sensor-${i}`] = formData.get(`sensor-${i}`);
+                    configData[`secondary${i}`] = formData.get(`secondary${i}`);
+                }
+
+                // Store the configuration in local storage
+                sessionStorage.setItem('sensorConfig', JSON.stringify(configData));
+                sendSensorConfig(); // Call the function to send the configuration to the server
+            });
+
             // Display any available session storage from previous config save
             const storedConfig = sessionStorage.getItem('sensorConfig');
             if (storedConfig) {
@@ -437,36 +477,6 @@
                     }
                 }
             }
-            // When the form is submitted, save the data in session storage and to ESP string arrays
-            document.querySelector('form').addEventListener('submit', function (event) {
-                event.preventDefault(); // Prevent the default form submission
-
-                const formData = new FormData(this);
-                let configData = {};
-                for (let i = 0; i < 8; i++) {
-                    configData[`sensor-${i}`] = formData.get(`sensor-${i}`);
-                    configData[`secondary${i}`] = formData.get(`secondary${i}`);
-                }
-
-                // Store the configuration in local storage
-                sessionStorage.setItem('sensorConfig', JSON.stringify(configData));
-
-                // Makes the POST request to the server
-                fetch('/configureSensors', {
-                    method: 'POST',
-                    body: formData
-                })
-                    .then(response => response.text())
-                    .then(data => {
-                        console.log(data);
-                        alert('Configuration saved successfully!');
-                    })
-                    .catch((error) => {
-                        console.error('There has been a problem with your fetch operation:', error);
-                        alert('Failed to save configuration.');
-                    });
-            });
-
 
             // Function to handle redirection with parameters
             function redirectToDataPage(channelNumber) {
