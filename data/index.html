@@ -331,6 +331,7 @@
         </form>
     </div>
     <script>
+        let isFirstSaveAttempt = true;
         // Updated post request to allow for error handling
         function sendSensorConfig() {
             const form = document.querySelector('form'); // Select the form
@@ -349,9 +350,15 @@
                     console.log('Server Response:', text); // Log each response to see
 
                     if (!ok) {
+                        if (isFirstSaveAttempt){
+                            alert('Initialzation in progress...try again!');
+                            isFirstSaveAttempt = false;
+                        }
+                        else {
                         alert('Error during sensor initialization: ' + text); 
                         sessionStorage.clear();
                         window.location.reload();
+                        }
                     } else {
                         alert('Success: ' + text);
                     }
