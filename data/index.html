@@ -331,6 +331,42 @@
         </form>
     </div>
     <script>
+        // Compact way to handle each error line and select the color box
+        function handleErrors(responseText) {
+            const errorMessages = responseText.split('\n'); // Split by new lines
+            errorMessages.forEach(errorMessage => {
+                const match = errorMessage.match(/channel (\d+)/i);
+                if (match && match[1]) {
+                    const channelIndex = parseInt(match[1], 10) - 1;
+                    updateColorBox(channelIndex, 'red');
+                    document.getElementById(`channel-${channelIndex}-button`).setAttribute('disabled', 'true');
+                }
+            });
+        }
+        
+        // Just updates the color of the box
+        function updateColorBox(index, color) {
+            const box = document.getElementById(`colorBox${index}`);
+            if (box) {
+                box.style.backgroundColor = color;
+            }
+        }
+
+        // Saves the settigns in session storage (locally on browser, clears when tab closes)
+        function saveSettings() {
+            const formData = new FormData(document.querySelector('form'));
+            let configData = {};
+            for (let i = 0; i < 8; i++) {
+                configData[`sensor-${i}`] = formData.get(`sensor-${i}`);
+                configData[`secondary${i}`] = formData.get(`secondary${i}`);
+                const colorBox = document.getElementById(`colorBox${i}`);
+                configData[`color-${i}`] = colorBox.style.backgroundColor;
+            }
+
+            // Store the configuration in local storage
+            sessionStorage.setItem('sensorConfig', JSON.stringify(configData));
+        }
+
         // Updated post request to allow for error handling
         function sendSensorConfig() {
             const form = document.querySelector('form'); // Select the form
@@ -350,37 +386,17 @@
 
                     if (!ok) {
                         alert('Error during sensor initialization: ' + text);
-                        //localStorage.clear();
 
                         // Parse the error message to find the channel number
-                        const match = text.match(/channel (\d+)/i);
-                        if (match && match[1]) {
-                            const channelIndex = (match[1] - 1);
-                            const box = document.getElementById(`colorBox${channelIndex}`);
-                            if (box) {
-                                box.style.backgroundColor = 'red'; // Set to red on error
-                                document.getElementById(`channel-${channelIndex}-button`).setAttribute('disabled', 'true');
-                            }
-                        }
-
+                        handleErrors(text);
+                        saveSettings();
                     } else {
                         alert('Success: ' + text);
-                        const primarySelects = document.querySelectorAll('[id^=sensors]');
-                        primarySelects.forEach(select => {
-                            const index = select.id.split("-")[1];
-                            const box = document.getElementById(`colorBox${index}`);
-                            if (box && select.value !== "None") {
-                                box.style.backgroundColor = 'green'; 
-                            } else if (box && select.value === "None"){
-                                box.style.backgroundColor = 'grey'; 
-                            }
-                        });
                     }
                 })
                 .catch(error => {
                     console.error('Failed to connect to the server:', error);
                     alert('Failed to connect to the server: ' + error);
-                    //localStorage.clear();
                 });
         }
 
@@ -454,14 +470,17 @@
             primarySelects.forEach(select => {
                 const index = select.id.split("-")[1];
                 const button = document.getElementById(`channel-${index}-button`);
+                const box = document.getElementById(`colorBox${index}`);
 
                 if (select.value !== "None") {
                     button.classList.remove('disabled');
                     button.removeAttribute('disabled');
+                    box.style.backgroundColor = 'green';
 
                 } else {
                     button.classList.add('disabled');
                     button.setAttribute('disabled', 'true');
+                    box.style.backgroundColor = 'grey';
                 }
             });
         });
@@ -473,23 +492,12 @@
             const form = document.querySelector('form');
             form.addEventListener('submit', function (event) {
                 event.preventDefault(); // Prevent the default form submission behavior
-
-                const formData = new FormData(this);
-                let configData = {};
-                for (let i = 0; i < 8; i++) {
-                    configData[`sensor-${i}`] = formData.get(`sensor-${i}`);
-                    configData[`secondary${i}`] = formData.get(`secondary${i}`);
-                    const colorBox = document.getElementById(`colorBox${i}`);
-                    configData[`color-${i}`] = colorBox.style.backgroundColor;
-                }
-
-                // Store the configuration in local storage
-                localStorage.setItem('sensorConfig', JSON.stringify(configData));
+                saveSettings();
                 sendSensorConfig(); // Call the function to send the configuration to the server
             });
 
             // Display any available session storage from previous config save
-            const storedConfig = localStorage.getItem('sensorConfig');
+            const storedConfig = sessionStorage.getItem('sensorConfig');
             if (storedConfig) {
                 const configData = JSON.parse(storedConfig);
                 for (let i = 0; i < 8; i++) {
@@ -504,9 +512,14 @@
                         secondarySelect.value = configData[`secondary${i}`];
                         colorBox.style.backgroundColor = configData[`color-${i}`];
 
-                        if (sensorSelect.value !== "None") {
+                        if (colorBox.style.backgroundColor === 'red') {
+                            channelButton.classList.add('disabled');
+                            channelButton.setAttribute('disabled', 'true');
+
+                        } else if (sensorSelect.value !== "None") {
                             channelButton.classList.remove('disabled');
                             channelButton.removeAttribute('disabled');
+
                         } else {
                             channelButton.classList.add('disabled');
                             channelButton.setAttribute('disabled', 'true');
