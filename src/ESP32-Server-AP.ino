@@ -3,13 +3,7 @@
 #include <WiFi.h>
 #include <SPIFFS.h>
 #include <ESPAsyncWebServer.h>
-#include "Adafruit_VEML7700.h"
-#include <Adafruit_BME280.h>
-#include <Adafruit_MPL3115A2.h>
-#include "Adafruit_MCP9808.h"
-#include "Adafruit_SGP30.h"
-#include "Adafruit_seesaw.h"
-#include "AGS02MA.h"
+#include "SensorLibrary.hh"
 #define SEALEVELPRESSURE_HPA (1013.25)
 #define TCAADDR 0x70
 
@@ -23,14 +17,8 @@ AsyncWebServer server(80);
 // String declarations
 String Sensors[8], SecondarySensors[8];
 
-// Object declarations
-Adafruit_VEML7700 veml = Adafruit_VEML7700();
-Adafruit_MCP9808 tempsensor = Adafruit_MCP9808();
-Adafruit_SGP30 sgp;
-Adafruit_MPL3115A2 baro;
-Adafruit_seesaw ss;
-AGS02MA AGS(26);
-Adafruit_BME280 bme;
+// Custom Sensor Framework
+SensorLibrary sensorLib;
 
 // Mux channel selector
 void tcaselect(uint8_t i)
@@ -41,171 +29,6 @@ void tcaselect(uint8_t i)
   Wire.beginTransmission(TCAADDR);
   Wire.write(1 << i);
   Wire.endTransmission();
-}
-
-// Initialization functions
-String initVEML7700(uint8_t channel)
-{
-  tcaselect(channel);
-  if (!veml.begin())
-  {
-    return "Failed to initialize VEML7700 on channel " + String(channel);
-  }
-  return ""; // Empty string indicates success
-}
-String initMCP9808(uint8_t channel)
-{
-  tcaselect(channel);
-  if (!tempsensor.begin(0x18))
-  {
-    return "Failed to initialize MCP9808 on channel " + String(channel);
-  }
-  tempsensor.setResolution(3); // Set resolution as needed
-  tempsensor.wake();           // Wake up the sensor
-  return "";
-}
-
-String initSGP30(uint8_t channel)
-{
-  tcaselect(channel);
-  if (!sgp.begin())
-  {
-    return "Failed to initialize SGP30 on channel " + String(channel);
-  }
-  sgp.setIAQBaseline(0x8E68, 0x8F41); // Set baseline as needed
-  return "";
-}
-
-String initSeesaw(uint8_t channel)
-{
-  tcaselect(channel);
-  if (!ss.begin(0x36))
-  { // Assume address 0x36 for seesaw device
-    return "Failed to initialize Seesaw on channel " + String(channel);
-  }
-  return "";
-}
-
-String initAGS02MA(uint8_t channel)
-{
-  tcaselect(channel);
-  if (!AGS.begin())
-  {
-    return "Failed to initialize AGS02MA on channel " + String(channel);
-  }
-  AGS.setPPBMode(); // Assuming the setPPBMode does not need a return value check
-  return "";
-}
-
-String initBME280(uint8_t channel)
-{
-  tcaselect(channel);
-  if (!bme.begin())
-  {
-    return "Failed to initialize BME280 on channel " + String(channel);
-  }
-  return "";
-}
-
-// Provide the readings of the specified sensor/sensor mode
-String readSeesaw(uint8_t channel, String sensorMode)
-{
-  tcaselect(channel);
-  float data = -1;
-  String valueJSON;
-  if (sensorMode == "Capacitive")
-  {
-    uint16_t capread = ss.touchRead(0);
-    valueJSON = "{\"primary\": \"Seesaw\", \"value\": " + String(capread) + ", \"unit\": \"Cap.\"}";
-  }
-  else
-  {
-    data = ss.getTemp();
-    valueJSON = "{\"primary\": \"Seesaw\", \"value\": " + String(data) + ", \"unit\": \"°F\"}";
-  }
-  return valueJSON;
-}
-String readSGP30(uint8_t channel, String sensorMode)
-{
-  tcaselect(channel);
-  sgp.IAQmeasure();
-  float data = -1;
-  String valueJSON;
-  if (sensorMode == "eCO2")
-  {
-    data = sgp.eCO2;
-    valueJSON = "{\"primary\": \"SGP30\", \"value\": " + String(data) + ", \"unit\": \"ppm\"}";
-  }
-  else
-  {
-    data = sgp.TVOC;
-    valueJSON = "{\"primary\": \"SGP30\", \"value\": " + String(data) + ", \"unit\": \"ppb\"}";
-  }
-  return valueJSON;
-}
-String readBME280(uint8_t channel, String sensorMode)
-{
-  tcaselect(channel);
-  float data = -1;
-  String valueJSON;
-  if (sensorMode == "Pressure")
-  {
-    data = bme.readPressure() / 100.0F;
-    valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"hPa\"}";
-  }
-  else if (sensorMode == "Altitude")
-  {
-    data = bme.readAltitude(SEALEVELPRESSURE_HPA);
-    valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"m\"}";
-  }
-  else if (sensorMode == "Humidity")
-  {
-    data = bme.readHumidity();
-    valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"%\"}";
-  }
-  else
-  {
-    data = bme.readTemperature();
-    valueJSON = "{\"primary\": \"BME280\", \"value\": " + String(data) + ", \"unit\": \"°C\"}";
-  }
-  return valueJSON;
-}
-float readMCP9808(uint8_t channel)
-{
-  tcaselect(channel);
-  // tempsensor.wake();
-  float temp = tempsensor.readTempF();
-  // tempsensor.shutdown_wake(1);
-  return temp;
-}
-float readMPL3115A2(uint8_t channel)
-{
-  tcaselect(channel);
-  float temperature = baro.getTemperature();
-  return temperature;
-}
-float readVEML7700(uint8_t channel)
-{
-  tcaselect(channel);
-  float lux = veml.readLux(VEML_LUX_AUTO);
-  return lux;
-}
-float readAGS02MA(uint8_t channel)
-{
-  uint32_t value = AGS.readPPB();
-  return value;
-}
-float readTSL2591(uint8_t channel)
-{
-  return 50.0 + (random(30) / 10.0);
-}
-float readADXL343(uint8_t channel)
-{
-  return 50.0 + (random(15) / 10.0);
-}
-float readVL53L4CD(uint8_t channel)
-{
-  return 50.0 + (random(80) / 10.0);
 }
 
 // Setup routes and filesystem
@@ -259,52 +82,55 @@ void setup()
 
   // Handling the form submission for both primary and secondary sensors
   server.on("/configureSensors", HTTP_POST, [](AsyncWebServerRequest *request)
-            {
+  {
     String errorMessage;
     for (int i = 0; i < 8; i++) {
+
+      tcaselect(i);
+      delay(150);
       String primaryParamName = "sensor-" + String(i);
+      String secondaryParamName = "secondary" + String(i);
       String result;
 
       // Check if the primary sensor parameter is provided
       if (request->hasParam(primaryParamName, true)) {
         String primaryParamValue = request->getParam(primaryParamName, true)->value();
         Sensors[i] = primaryParamValue;
+        Serial.println(primaryParamName + ": " + primaryParamValue);
 
-        // Attempt to initialize the sensor and collect any error messages
-        if (Sensors[i] == "VEML7700") {
-          result = initVEML7700(i);
-        }
-        // Extend initialization to other sensors based on your setup
-        else if (Sensors[i] == "MCP9808") {
-          result = initMCP9808(i);
-        }
-        else if (Sensors[i] == "SGP30") {
-          result = initSGP30(i);
-        }
-        else if (Sensors[i] == "Seesaw") {
-          result = initSeesaw(i);
-        }
-        else if (Sensors[i] == "AGS02MA") {
-          result = initAGS02MA(i);
-        }
-        else if (Sensors[i] == "BME280") {
-          result = initBME280(i);
-        }
-        // Add more sensors as necessary...
-
-        if (!result.isEmpty()) {
-          errorMessage += result + "\n"; // Accumulate error messages
-        }
-      } else {
-        errorMessage += primaryParamName + " parameter not found.\n";
+        if (request->hasParam(secondaryParamName, true)) {
+          String secondaryParamValue = request->getParam(secondaryParamName, true)->value();
+          SecondarySensors[i] = secondaryParamValue;
+          Serial.println(secondaryParamName + ": " + secondaryParamValue);
       }
-    }
-
-    if (!errorMessage.isEmpty()) {
-      request->send(500, "text/plain", errorMessage); // Send error message if there are any
+      
+      if (Sensors[i] == "VEML7700") {
+        result = sensorLib.Start_VEML7700_Sensor();
+      } else if (Sensors[i] == "MCP9808") {
+        result = sensorLib.Start_MCP9808_Sensor();
+      } else if (Sensors[i] == "SGP30") {
+        result = sensorLib.Start_SGP30_Sensor();
+      } else if (Sensors[i] == "Seesaw") {
+        result = sensorLib.Start_Seesaw_Sensor();
+      } else if (Sensors[i] == "AGS02MA") {
+        result = sensorLib.Start_AGS02MA_Sensor();
+      } else if (Sensors[i] == "BME280") {
+        result = sensorLib.Start_BME280_Sensor();
+      }  
+      // Add other sensors here
+      if (!result.isEmpty()) {
+        errorMessage += result + (i+1)+ "\n"; // Accumulate error messages
+      }
     } else {
-      request->send(200, "text/plain", "All sensors initialized successfully");
-    } });
+      errorMessage += primaryParamName + " parameter not found.\n";
+    }
+  }
+
+  if (!errorMessage.isEmpty()) {
+    request->send(500, "text/plain", errorMessage); // Send error message if there are any
+  } else {
+    request->send(200, "text/plain", "All sensors initialized successfully");
+  } });
 
   // Define server routes to serve files
   server.on("/", HTTP_GET, [](AsyncWebServerRequest *request)
@@ -319,12 +145,6 @@ void setup()
   server.on("/styles_data.css", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/styles_data.css", "text/css"); });
 
-  server.on("/data.txt", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(SPIFFS, "/data.txt", "text/plain"); });
-
-  server.on("/graph.png", HTTP_GET, [](AsyncWebServerRequest *request)
-            { request->send(SPIFFS, "/graph.png", "image/png"); });
-
   server.on("/background.png", HTTP_GET, [](AsyncWebServerRequest *request)
             { request->send(SPIFFS, "/background.png", "image/png"); });
 
@@ -334,42 +154,41 @@ void setup()
 
   // Sensor data endpoint
   server.on("/get-sensor-data", HTTP_GET, [](AsyncWebServerRequest *request)
-            {
+  {
     String sensorData;
     if (request->hasParam("primary")) {
       String primarySensor = request->getParam("primary")->value();
       String secondarySensor = request->getParam("secondary")->value();
       int channel = request->getParam("channel")->value().toInt(); 
       delay(150); // Prevents preemptive reading; need this to prevent crashes
-      
+      tcaselect(channel);
       // Find sesnsor and read the value; return a JSON string 
       if (primarySensor == "MCP9808") {
-          float temp = readMCP9808(channel);
+          float temp = sensorLib.Poll_MCP9808_Sensor();
           sensorData = "{\"primary\": \"MCP9808\", \"value\": " + String(temp) + ", \"unit\": \"°F\"}";
       } else if (primarySensor == "Seesaw") {
-          sensorData = readSeesaw(channel, secondarySensor);
+          sensorData = sensorLib.Poll_Seesaw_Sensor(secondarySensor);
       } else if (primarySensor == "SGP30") { 
-          sensorData = readSGP30(channel, secondarySensor);
+          sensorData = sensorLib.Poll_SGP30_Sensor(secondarySensor);
       } else if (primarySensor == "ADXL343") {
-          float humidity = readADXL343(channel);
-          sensorData = "{\"primary\": \"ADXL343\", \"value\": " + String(humidity) + ", \"unit\": \"xyz\"}";
+           float* temp = sensorLib.Poll_ADXL343_Sensor();
+          String str = String(temp[0]) + String(temp[1]) + String(temp[2]);
+          sensorData = "{\"primary\": \"ADXL343\", \"value\": " + str + ", \"unit\": \"xyz\"}";
       } else if (primarySensor == "VL53L4CD") {
-          float humidity = readVL53L4CD(channel);
-          sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + ", \"unit\": \"mm\"}";
+          // float humidity = readVL53L4CD();
+          // sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + ", \"unit\": \"mm\"}";
       } else if (primarySensor == "BME280") {
-        sensorData = readBME280(channel, secondarySensor);
+        sensorData = sensorLib.Poll_BME280_Sensor(secondarySensor);
       } else if (primarySensor == "TSL2591") {
-          float humidity = readTSL2591(channel);
-          sensorData = "{\"primary\": \"TSL2591\", \"value\": " + String(humidity) + ", \"unit\": \"lux\"}";
+          sensorData = sensorLib.Poll_TSL2591_Sensor(secondarySensor);
       } else if (primarySensor == "AGS02MA") {
-          float tvoc = readAGS02MA(channel);
+          float tvoc = sensorLib.Poll_AGS02MA_Sensor();
           sensorData = "{\"primary\": \"AGS02MA\", \"value\": " + String(tvoc) + ", \"unit\": \"ppb\"}";
       } else if (primarySensor == "VEML7700") {
-          float LUX = readVEML7700(channel);
+          float LUX = sensorLib.Poll_VEML7700_Sensor();
           sensorData = "{\"primary\": \"VEML7700\", \"value\": " + String(LUX) + ", \"unit\": \"lux\"}";
       } else if (primarySensor == "MPL3115A2") {
-          float temperature = readMPL3115A2(channel);
-          sensorData = "{\"primary\": \"MPL3115A2\", \"value\": " + String(temperature) + ", \"unit\": \"mmHg\"}";
+          sensorData = sensorLib.Poll_MPL3115A2_Sensor(secondarySensor);
       }
       else {
           sensorData = "{\"error\": \"Unknown sensor\"}";

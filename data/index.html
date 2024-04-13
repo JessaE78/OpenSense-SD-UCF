@@ -333,16 +333,24 @@
     <script>
         // Updated post request to allow for error handling
         function sendSensorConfig() {
+            const form = document.querySelector('form'); // Select the form
             const formData = new FormData(document.querySelector('form'));
             fetch('/configureSensors', {
                 method: 'POST',
                 body: formData
             })
-                .then(response => response.text().then(text => ({ text, ok: response.ok })))
+                .then(response => {
+                    // Get both the response text and the status to use later
+                    return response.text().then(text => {
+                        return { text: text, ok: response.ok }; // Return an object containing the text and status
+                    });
+                })
                 .then(({ text, ok }) => {
+                    console.log('Server Response:', text); // Log each response to see
+
                     if (!ok) {
-                        alert('Error during sensor initialization: ' + text);
-                        sessionStorage.clear(); 
+                        alert('Error during sensor initialization: ' + text); 
+                        sessionStorage.clear();
                         window.location.reload();
                     } else {
                         alert('Success: ' + text);
@@ -351,7 +359,7 @@
                 .catch(error => {
                     console.error('Failed to connect to the server:', error);
                     alert('Failed to connect to the server: ' + error);
-                    sessionStorage.clear(); 
+                    sessionStorage.clear();
                     window.location.reload();
                 });
         }
