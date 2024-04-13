@@ -36,6 +36,8 @@ void setup()
 {
   Serial.begin(115200);
 
+  Wire.begin();
+
   // Initialize SPIFFS
   if (!SPIFFS.begin(true))
   {
@@ -204,6 +206,5 @@ void setup()
 
 void loop()
 {
-  // Using the noise from an unconnected analog pin for randomness.
-  randomSeed(analogRead(32));
+
 }
