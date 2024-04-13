@@ -38,7 +38,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox0" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -75,7 +75,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox1" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -112,7 +112,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox2" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -149,7 +149,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox3" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -186,7 +186,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox4" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -223,7 +223,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox5" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -260,7 +260,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox6" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -297,7 +297,7 @@
 
                         <!-- sensor verification -->
                         <th>
-                            <div class="color-square"></div>
+                            <div id="colorBox7" class="color-square"></div>
                         </th>
 
                         <!-- secondary sensor option -->
@@ -350,18 +350,37 @@
 
                     if (!ok) {
                         alert('Error during sensor initialization: ' + text);
-                        sessionStorage.clear();
-                        window.location.reload();
+                        //localStorage.clear();
+
+                        // Parse the error message to find the channel number
+                        const match = text.match(/channel (\d+)/i);
+                        if (match && match[1]) {
+                            const channelIndex = (match[1] - 1);
+                            const box = document.getElementById(`colorBox${channelIndex}`);
+                            if (box) {
+                                box.style.backgroundColor = 'red'; // Set to red on error
+                                document.getElementById(`channel-${channelIndex}-button`).setAttribute('disabled', 'true');
+                            }
+                        }
 
                     } else {
                         alert('Success: ' + text);
+                        const primarySelects = document.querySelectorAll('[id^=sensors]');
+                        primarySelects.forEach(select => {
+                            const index = select.id.split("-")[1];
+                            const box = document.getElementById(`colorBox${index}`);
+                            if (box && select.value !== "None") {
+                                box.style.backgroundColor = 'green'; 
+                            } else if (box && select.value === "None"){
+                                box.style.backgroundColor = 'grey'; 
+                            }
+                        });
                     }
                 })
                 .catch(error => {
                     console.error('Failed to connect to the server:', error);
                     alert('Failed to connect to the server: ' + error);
-                    sessionStorage.clear();
-                    window.location.reload();
+                    //localStorage.clear();
                 });
         }
 
@@ -439,6 +458,7 @@
                 if (select.value !== "None") {
                     button.classList.remove('disabled');
                     button.removeAttribute('disabled');
+
                 } else {
                     button.classList.add('disabled');
                     button.setAttribute('disabled', 'true');
@@ -459,26 +479,30 @@
                 for (let i = 0; i < 8; i++) {
                     configData[`sensor-${i}`] = formData.get(`sensor-${i}`);
                     configData[`secondary${i}`] = formData.get(`secondary${i}`);
+                    const colorBox = document.getElementById(`colorBox${i}`);
+                    configData[`color-${i}`] = colorBox.style.backgroundColor;
                 }
 
                 // Store the configuration in local storage
-                sessionStorage.setItem('sensorConfig', JSON.stringify(configData));
+                localStorage.setItem('sensorConfig', JSON.stringify(configData));
                 sendSensorConfig(); // Call the function to send the configuration to the server
             });
 
             // Display any available session storage from previous config save
-            const storedConfig = sessionStorage.getItem('sensorConfig');
+            const storedConfig = localStorage.getItem('sensorConfig');
             if (storedConfig) {
                 const configData = JSON.parse(storedConfig);
                 for (let i = 0; i < 8; i++) {
                     const sensorSelect = document.getElementById(`sensors-${i}`);
                     const secondarySelect = document.getElementById(`secondary-${i}`);
                     const channelButton = document.getElementById(`channel-${i}-button`);
+                    const colorBox = document.getElementById(`colorBox${i}`);
 
                     if (sensorSelect && secondarySelect && channelButton) {
                         sensorSelect.value = configData[`sensor-${i}`];
                         updateSecondaryOptions(sensorSelect, secondarySelect);
                         secondarySelect.value = configData[`secondary${i}`];
+                        colorBox.style.backgroundColor = configData[`color-${i}`];
 
                         if (sensorSelect.value !== "None") {
                             channelButton.classList.remove('disabled');
