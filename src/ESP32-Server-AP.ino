@@ -8,8 +8,8 @@
 #define TCAADDR 0x70
 
 // WiFi Access Point Information
-const char *ssid = "ESP32-Access-Point";
-const char *password = "password";
+const char *ssid = "Open Sense";
+const char *password = "password123";
 
 // Intialize asyncronous server
 AsyncWebServer server(80);
