@@ -118,7 +118,15 @@ void setup()
         result = sensorLib.Start_AGS02MA_Sensor();
       } else if (Sensors[i] == "BME280") {
         result = sensorLib.Start_BME280_Sensor();
-      }  
+      }  else if (Sensors[i] == "VL53L4CD") {
+        result = sensorLib.Start_VL53L4CD_Sensor();
+      } else if (Sensors[i] == "ADXL343") {
+        result = sensorLib.Start_ADXL343_Sensor();
+      } else if (Sensors[i] == "TSL2591") {
+        result = sensorLib.Start_TSL2591_Sensor();
+      } else if (Sensors[i] == "MPL3115A2") {
+        result = sensorLib.Start_MPL3115A2_Sensor();
+      } 
       // Add other sensors here
       if (!result.isEmpty()) {
         errorMessage += result + (i+1)+ "\n"; // Accumulate error messages
@@ -177,8 +185,8 @@ void setup()
           String str = String(temp[0]) + String(temp[1]) + String(temp[2]);
           sensorData = "{\"primary\": \"ADXL343\", \"value\": " + str + ", \"unit\": \"xyz\"}";
       } else if (primarySensor == "VL53L4CD") {
-          // float humidity = readVL53L4CD();
-          // sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(humidity) + ", \"unit\": \"mm\"}";
+          float TOF = sensorLib.Poll_VL53L4CD_Sensor();
+          sensorData = "{\"primary\": \"VL53L4CD\", \"value\": " + String(TOF) + ", \"unit\": \"mm\"}";
       } else if (primarySensor == "BME280") {
         sensorData = sensorLib.Poll_BME280_Sensor(secondarySensor);
       } else if (primarySensor == "TSL2591") {
