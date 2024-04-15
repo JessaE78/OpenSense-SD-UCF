@@ -20,6 +20,24 @@ String Sensors[8], SecondarySensors[8];
 // Custom Sensor Framework
 SensorLibrary sensorLib;
 
+// LED states
+void APstarted(WiFiEvent_t event){
+    digitalWrite(12, LOW);
+    Serial.print("Acess point is now Ready");
+}
+void APstopped(WiFiEvent_t event){
+    digitalWrite(12, HIGH);
+    Serial.print("Acess point is unavailable");
+}
+void UserConnection(WiFiEvent_t event){
+    digitalWrite(13, LOW);
+    Serial.print("User has connected to access point");
+}
+void UserDisconnection(WiFiEvent_t event){
+    digitalWrite(13, HIGH);
+    Serial.print("User has disconnected from access point");
+}
+
 // Mux channel selector
 void tcaselect(uint8_t i)
 {
@@ -37,7 +55,18 @@ void setup()
   Serial.begin(115200);
 
   Wire.begin();
-
+  
+  // Change LED states
+  pinMode(12, OUTPUT);
+  digitalWrite(12, HIGH);
+  pinMode(13, OUTPUT);
+  digitalWrite(13, HIGH);
+  
+  WiFi.onEvent(APstarted, WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_START);
+  WiFi.onEvent(APstopped, WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STOP);
+  WiFi.onEvent(UserConnection, WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STACONNECTED);
+  WiFi.onEvent(UserDisconnection, WiFiEvent_t::ARDUINO_EVENT_WIFI_AP_STADISCONNECTED);
+  
   // Initialize SPIFFS
   if (!SPIFFS.begin(true))
   {
