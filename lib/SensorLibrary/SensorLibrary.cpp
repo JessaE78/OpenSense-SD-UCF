@@ -5,6 +5,29 @@ SensorLibrary::SensorLibrary() {
     
 }
 
+String SensorLibrary::Start_VL53L4CD_Sensor() {
+  Serial.println("attempt to start");
+  TOF.begin();
+  TOF.VL53L4CD_On(); 
+  VL53L4CD_ERROR status = TOF.InitSensor();
+    if(status !=  VL53L4CD_ERROR_NONE){
+      Serial.println("cannot init");
+        return "Failed to initialize VL53L4CD on channel ";
+    } else {
+        // Switch off VL53L4CD satellite component.
+        TOF.VL53L4CD_Off();
+
+        //Initialize VL53L4CD satellite component.
+        TOF.InitSensor();
+
+        // Program the highest possible TimingBudget, without enabling the
+        // low power mode. This should give the best accuracy
+        TOF.VL53L4CD_SetRangeTiming(200, 0);
+    }
+
+    return "";
+}
+
 String SensorLibrary::Start_MCP9808_Sensor() {
     if (!mcp9808.begin(0x18)) {
         return "Failed to initialize MCP9808 on channel ";
@@ -54,27 +77,6 @@ String SensorLibrary::Start_TSL2591_Sensor() {
     tsl2591.setTiming(TSL2591_INTEGRATIONTIME_300MS);
     return "";
 }
-
-// String Start_VL53L4CD_Sensor(){
-//   // Configure VL53L4CD satellite component.
-//   if(!sensor_vl53l4cd_sat.begin()){
-//     return "Failed to initialize TSL2591 on channel ";
-//   }
-
-//   // Switch off VL53L4CD satellite component.
-//   sensor_vl53l4cd_sat.VL53L4CD_Off();
-
-//   //Initialize VL53L4CD satellite component.
-//   sensor_vl53l4cd_sat.InitSensor();
-
-//   // Program the highest possible TimingBudget, without enabling the
-//   // low power mode. This should give the best accuracy
-//   sensor_vl53l4cd_sat.VL53L4CD_SetRangeTiming(200, 0);
-
-//   // Start Measurements
-//   sensor_vl53l4cd_sat.VL53L4CD_StartRanging();
-//   return "";
-// }
 
 String SensorLibrary::Start_AGS02MA_Sensor() {
     Wire.setClock(20000);
@@ -194,15 +196,29 @@ float SensorLibrary::Poll_MCP9808_Sensor() {
     return temp;
 }
 
-// float Poll_VL53L4CD_Sensor(){
-//   VL53L4CD_Result_t results;
+float SensorLibrary::Poll_VL53L4CD_Sensor() { 
+    uint8_t NewDataReady = 0;
+    VL53L4CD_Result_t results;
+    uint8_t status;
+    char report[64];
+    Serial.println("polling l4cd");
+    TOF.VL53L4CD_StartRanging();
+    status = TOF.VL53L4CD_CheckForDataReady(&NewDataReady);
+    
+    do {
+      status = TOF.VL53L4CD_CheckForDataReady(&NewDataReady);
+    } while (!NewDataReady);
 
-//   sensor_vl53l4cd_sat.VL53L4CD_ClearInterrupt();
+    if ((!status) && (NewDataReady != 0)) {
+    // (Mandatory) Clear HW interrupt to restart measurements
+    TOF.VL53L4CD_ClearInterrupt();
 
-//   sensor_vl53l4cd_sat.VL53L4CD_GetResult(&results);
-  
-//   return results.distance_mm;
-// }
+    // Read measured distance. RangeStatus = 0 means valid data
+    TOF.VL53L4CD_GetResult(&results);
+  }
+
+  return results.distance_mm;
+}
 
 float SensorLibrary::Poll_AGS02MA_Sensor() {
     Wire.setClock(20000);
