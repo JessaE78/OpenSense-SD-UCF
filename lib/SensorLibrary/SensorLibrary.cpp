@@ -136,12 +136,12 @@ float* SensorLibrary::Poll_ADXL343_Sensor() {
 String SensorLibrary::Poll_Seesaw_Sensor(String choice) {
     float data = -1;
     String valueJSON;
-    if (choice == "Capacitive") {
+    if (choice == "Temperature") {
+        data = stemmasoil.getTemp();
+        valueJSON = "{\"primary\": \"Seesaw\", \"value\": " + String(data) + ", \"unit\": \"°C\"}";
+    } else {
         uint16_t capread = stemmasoil.touchRead(0);
         valueJSON = "{\"primary\": \"Seesaw\", \"value\": " + String(capread) + ", \"unit\": \"Cap.\"}";
-    } else {
-        data = stemmasoil.getTemp();
-        valueJSON = "{\"primary\": \"Seesaw\", \"value\": " + String(data) + ", \"unit\": \"°F\"}";
     }
     return valueJSON;
 }
