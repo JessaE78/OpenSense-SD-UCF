@@ -11,7 +11,7 @@
 <body>
     <div class="main-container">
         <div class="header">
-            <h1>Open Sense Data Displaying</h1>
+            <h1>Open Sense Data Display</h1>
         </div>
 
         <!-- Top half container -->
@@ -30,8 +30,8 @@
         </div>
 
         <div class="chart-info">
-            <span>Sensor data</span>
-            <span style="margin-left: 290px;">Graph</span>
+            <span style="margin-left: 10px; ">Sensor data (name, time (s), reading, unit)</span>
+            <span style="margin-left: 175px; margin-right: 100px">Graph</span>
         </div>
 
         <!-- Bottom half container -->
@@ -132,6 +132,7 @@
             }, 2000); // Poll every 2 seconds, adjust as needed
         }
 
+        var counter = 0;
         // Get the sesnor data and display it
         function fetchAndDisplaySensorData(primary, secondary, channel) {
             const url = `/get-sensor-data?primary=${primary}&secondary=${secondary}&channel=${channel}`; // Example URL, adjust as needed
@@ -140,14 +141,17 @@
                 .then(data => {
                     const dataContainer = document.getElementById('data-list');
                     //dataContainer.innerHTML = '';  To not append to last
+                    const time = `${counter * 2}`; // Calculate time based on counter, assuming each increment is 2 seconds
                     const dataElement = document.createElement('p');
-                    dataElement.textContent = `${data.primary}, ${data.value}, ${data.unit}`;
+                    dataElement.textContent = `${data.primary}, ${time}, ${data.value}, ${data.unit}`;
                     dataContainer.appendChild(dataElement);
 
                     csvData += `,${data.value}`;
                     updateChartData(myChart, data.value);
                 })
                 .catch(error => console.error("Error fetching sensor data:", error));
+
+                counter++;
         }
 
         function updateChartData(chart, newValue) {
@@ -196,11 +200,11 @@
 
         function downloadFile() {
             const paragraphs = document.querySelectorAll("#data-list p");
-            let csvContent = "Primary,Value,Units\n"; // Header line *NOTE: CHANGE THIS IF ADDING TIMESTAMPS*
+            let csvContent = "Sensor Name,Time(s),Value,Units\n"; // Header line *NOTE: CHANGE THIS IF ADDING TIMESTAMPS*
 
             paragraphs.forEach(paragraph => {
                 const data = paragraph.textContent.split(', '); // data is separated by ", "
-                csvContent += `${data[0]},${data[1]},${data[2]}\n`;
+                csvContent += `${data[0]},${data[1]},${data[2]}, ${data[3]}\n`;
             });
 
             const file = new Blob([csvContent], { type: 'text/csv' });
